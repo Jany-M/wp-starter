@@ -1,0 +1,40 @@
+@import url('css/style.css');
+/*
+Theme Name: Name
+Template:     name (of parent)
+Text Domain: slug of name (no spaces no capitals)
+Description: 
+Author: shambix
+Author URI: http://www.shambix.com
+Version: 1
+*/
+
+/* if child import parent css */
+/*@import url("../funintuscany/style.css");*/
+
+/* IMG */
+img[class*="align"],
+img[class*="wp-image-"],
+img[class*="attachment-"] {
+	height: auto; 
+}
+img.size-full,
+img.size-large,
+img.header-image,
+img.wp-post-image {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Images */
+.alignleft {
+	float: left;
+}
+.alignright {
+	float: right;
+}
+.aligncenter {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
