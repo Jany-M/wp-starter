@@ -13,7 +13,51 @@
 	error_reporting(0);
 endif;*/
 
-include('library/setup.php'); // include the main setup file - always
+// THEME
+$theme = wp_get_theme();
+$theme_name = $theme->get( 'TextDomain' ); //use this var when necessary, for inline translations eg. _e('Contact us', $theme_name);
+$locale = get_locale(); 
+
+// WPML 
+if(array_key_exists('sitepress', $GLOBALS)) {
+	global $sitepress;
+	$deflang = $sitepress->get_default_language();
+	if(defined('ICL_LANGUAGE_CODE')) {
+		$lang = ICL_LANGUAGE_CODE; //use this var when necessary
+	}
+} else {
+	//$lang = 'en';
+}
+
+
+function wp_starter_theme_setup() {
+	global $theme_name;
+	// ADD THEME SUPPORT
+	add_theme_support('post-thumbnails');      // wp thumbnails
+	add_theme_support( 'menus' );            // wp menus - Add menus from custom_menus.php
+	/*add_theme_support( 'post-formats',      // post formats
+		array( 
+			'aside',   // title less blurb
+			'gallery', // gallery of images
+			'link',    // quick link to other site
+			'image',   // an image
+			'quote',   // a quick quote
+			'status',  // a Facebook like status update
+			'video',   // video 
+			'audio',   // audio
+			'chat'     // chat transcript 
+		)
+	);*/	
+	//set_post_thumbnail_size(125, 125, true);   // default thumb size
+	//add_theme_support( 'custom-background' );  // wp custom background
+	//add_theme_support('automatic-feed-links'); // rss thingy
+	// to add header image support go here: http://themble.com/support/adding-header-background-image-support/
+	// ADD WOOCOMMERCE 
+	//add_theme_support( 'woocommerce' );
+	// ADD LANGUAGE FILE
+	load_theme_textdomain( $theme_name, get_template_directory() . '/languages' );
+}
+add_action('after_setup_theme','wp_starter_theme_setup');
 
 /* -------------------------------------------------------------------------------- 
 *
@@ -46,16 +90,26 @@ function load_files() {
 	// -------------- STYLES, ICONS & HELPERS
 	wp_register_script( 'modernizr', get_template_directory_uri() . '/library/js/modernizr.full.min.js', '', '2.8.3', true );
 	wp_enqueue_script('modernizr');
+
+	/*wp_register_style( 'fancybox_css', ''.get_template_directory_uri() . '/library/helpers/fancybox/jquery.fancybox.css', '2.1.5', 'screen');
+	wp_enqueue_style( 'fancybox_css' );
+	wp_register_script( 'fancybox_js', get_template_directory_uri().'/library/helpers/fancybox/jquery.fancybox.pack.js', array('jquery'), '2.1.5', true);
+	wp_enqueue_script( 'fancybox_js' );*/
+
 	/*wp_register_script( 'videojs_js', '//vjs.zencdn.net/4.2/video.js','', '4.2', true);
 	wp_enqueue_script( 'videojs_js' );
 	wp_register_style( 'videojs_css', '//vjs.zencdn.net/4.2/video-js.css', '4.2', 'all');
 	wp_enqueue_style( 'videojs__css' );*/
+
 	/*wp_register_script( 'img_loaded', ''.get_template_directory_uri().'/library/js/imagesloaded.pkgd.min.js', '', '3.1.8', true);
 	wp_enqueue_script( 'img_loaded' );
-	wp_register_script( 'isotope', ''.get_template_directory_uri().'/library/js/isotope.pkgd.min.js', '', '2.0.0', true);
+
+	wp_register_script( 'isotope', ''.get_template_directory_uri().'/library/js/isotope.pkgd.min.js', '', '2.1.0', true);
 	wp_enqueue_script( 'isotope' );
-	wp_register_script( 'infinite_scroll', ''.get_template_directory_uri().'/library/js/jquery.infinitescroll.min.js', array('jquery'), '2.0.2', true);
+
+	wp_register_script( 'infinite_scroll', ''.get_template_directory_uri().'/library/js/jquery.infinitescroll.min.js', array('jquery'), '2.1.0', true);
 	wp_enqueue_script( 'infinite_scroll' );
+
 	wp_register_script( 'easing', '//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js',  array('jquery'), '1.3', true);
 	wp_enqueue_script( 'easing' );*/
 
@@ -72,7 +126,6 @@ function load_files() {
 	*/
 
 	// -------------- CUSTOM
-
 }
 
 // Don't load this stuff in Admin panel, it will slow down everything and maybe also break it
@@ -88,7 +141,7 @@ if(!is_admin()) {
 
 include('library/helpers/wp-imager.php'); // script to resize and cache images.. and more
 include('library/wordpress/cool_scripts.php'); // wide selection of functions for your theme, some are disabled by default, some you can copy here and customize (but comment them there, then)
-//include('library/wordpress/shortcodes.php');
+include('library/wordpress/shortcodes.php');
 //include('custom/wordpress/custom_post_types.php'); // use this file to Add Custom Post Types and Custom Taxonomies
 //include('custom/wordpress/custom_panel.php'); // use this file to customize the WP backend/panel
 //include('custom/wordpress/custom_menus.php'); // use this file to add menus
