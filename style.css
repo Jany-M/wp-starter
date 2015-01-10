@@ -1,4 +1,6 @@
+@import url('css/normalize.css');
 @import url('css/style.css');
+
 /*
 Theme Name: Name
 Template:     name (of parent)
@@ -10,7 +12,7 @@ Version: 1
 */
 
 /* if child import parent css */
-/*@import url("../funintuscany/style.css");*/
+/*@import url("../themename/style.css");*/
 
 /* IMG */
 img[class*="align"],

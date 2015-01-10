@@ -11,6 +11,12 @@ Some libraries
 
 ## History
 
+**10/1/2015**
+- updated bootstrap
+- updated timthumbs
+- re-ordered structure
+- updated WP-Imager
+
 **31/8/2014**
 - `release` version 1.0
 

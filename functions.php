@@ -26,20 +26,25 @@ function load_files() {
     wp_deregister_script( 'jquery' );
     wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js', '', '2.1.0');
     wp_enqueue_script( 'jquery' );
-	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js', array('jquery'), '3.2.0.', true);
+	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js', array('jquery'), '3.3.1', true);
 	wp_enqueue_script( 'boostrap_js' );
 
 	// -------------- CSS
-	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css', '3.2.0', 'all');
+	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css', '3.3.1', 'all');
 	wp_enqueue_style( 'bootstrap_css' );
-	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css', '4.1.0', 'all');
+	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css', '4.2.0', 'all');
 	wp_enqueue_style( 'fontawesome_css' );
 	
-	wp_register_style( 'tema_css', ''.get_stylesheet_uri().'', null, 'screen');
-	wp_enqueue_style( 'tema_css' );
+	wp_register_style( 'theme_css', ''.get_stylesheet_uri().'', null, 'screen');
+	wp_enqueue_style( 'theme_css' );
+
+	if(file_exists(get_template_directory_uri().'/custom/css/responsive.css')) {
+		wp_register_style( 'resp_theme_css', get_template_directory_uri().'/custom/css/responsive.css', null, 'screen');
+		wp_enqueue_style( 'resp_theme_css' );
+	}
 
 	// -------------- STYLES, ICONS & HELPERS
-	wp_register_script(  'modernizr', get_template_directory_uri() . '/library/js/modernizr.full.min.js', '', '2.0.6', true );
+	wp_register_script( 'modernizr', get_template_directory_uri() . '/library/js/modernizr.full.min.js', '', '2.8.3', true );
 	wp_enqueue_script('modernizr');
 	/*wp_register_script( 'videojs_js', '//vjs.zencdn.net/4.2/video.js','', '4.2', true);
 	wp_enqueue_script( 'videojs_js' );
@@ -66,7 +71,7 @@ function load_files() {
 	wp_enqueue_style( 'metro_styles_css' );
 	*/
 
-	/* -------------- CUSTOM */
+	// -------------- CUSTOM
 
 }
 
