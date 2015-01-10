@@ -148,51 +148,17 @@ include('library/wordpress/shortcodes.php');
 //include('custom/wordpress/custom_sidebars_widgets.php'); // use this file to add sidebars and custom widgets
 //include('custom/wordpress/custom_meta_boxes.php'); // use this file to add custom meta boxes or edit system ones
 
-/**
- * This file represents an example of the code that themes would use to register
- * the required plugins.
- *
- * It is expected that theme authors would copy and paste this code into their
- * functions.php file, and amend to suit.
- *
- * @package    TGM-Plugin-Activation
- * @subpackage Example
- * @version    2.4.0
- * @author     Thomas Griffin <thomasgriffinmedia.com>
- * @author     Gary Jones <gamajo.com>
- * @copyright  Copyright (c) 2014, Thomas Griffin
- * @license    http://opensource.org/licenses/gpl-2.0.php GPL v2 or later
- * @link       https://github.com/thomasgriffin/TGM-Plugin-Activation
- */
 
-/**
- * Include the TGM_Plugin_Activation class.
- */
-require_once dirname( __FILE__ ) . '/class-tgm-plugin-activation.php';
-
+// TGM Plugin Activation
+// Version: 2.4.0
+require_once dirname( __FILE__ ) . '/library/helpers/class-tgm-plugin-activation.php';
 add_action( 'tgmpa_register', 'my_theme_register_required_plugins' );
-/**
- * Register the required plugins for this theme.
- *
- * In this example, we register two plugins - one included with the TGMPA library
- * and one from the .org repo.
- *
- * The variable passed to tgmpa_register_plugins() should be an array of plugin
- * arrays.
- *
- * This function is hooked into tgmpa_init, which is fired within the
- * TGM_Plugin_Activation class constructor.
- */
+
 function my_theme_register_required_plugins() {
+	$plugins = array(
 
-    /**
-     * Array of plugin arrays. Required keys are name and slug.
-     * If the source is NOT from the .org repo, then source is also required.
-     */
-    $plugins = array(
-
-        // This is an example of how to include a plugin pre-packaged with a theme.
-        array(
+		// This is an example of how to include a plugin pre-packaged with a theme.
+        /*array(
             'name'               => 'TGM Example Plugin', // The plugin name.
             'slug'               => 'tgm-example-plugin', // The plugin slug (typically the folder name).
             'source'             => get_stylesheet_directory() . '/lib/plugins/tgm-example-plugin.zip', // The plugin source.
@@ -201,28 +167,50 @@ function my_theme_register_required_plugins() {
             'force_activation'   => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch.
             'force_deactivation' => false, // If true, plugin is deactivated upon theme switch, useful for theme-specific plugins.
             'external_url'       => '', // If set, overrides default API URL and points to an external URL.
-        ),
+        ),*/
 
         // This is an example of how to include a plugin from a private repo in your theme.
-        array(
+        /*array(
             'name'               => 'TGM New Media Plugin', // The plugin name.
             'slug'               => 'tgm-new-media-plugin', // The plugin slug (typically the folder name).
             'source'             => 'https://s3.amazonaws.com/tgm/tgm-new-media-plugin.zip', // The plugin source.
             'required'           => true, // If false, the plugin is only 'recommended' instead of required.
             'external_url'       => 'https://github.com/thomasgriffin/New-Media-Image-Uploader', // If set, overrides default API URL and points to an external URL.
-        ),
+        ),*/
 
         // This is an example of how to include a plugin from the WordPress Plugin Repository.
         array(
-            'name'      => 'BuddyPress',
-            'slug'      => 'buddypress',
+            'name'      => 'All in One SEO Pack',
+            'slug'      => 'all-in-one-seo-pack',
+            'required'  => false,
+        ),
+		array(
+            'name'      => 'Jetpack by WordPress.com',
+            'slug'      => 'jetpack',
+            'required'  => false,
+        ),
+		array(
+            'name'      => 'WP-DBManager',
+            'slug'      => 'wp-dbmanager',
+            'required'  => false,
+        ),
+		array(
+            'name'      => 'Types - Complete Solution for Custom Fields and Types',
+            'slug'      => 'types',
+            'required'  => false,
+        ),
+		array(
+            'name'      => 'WP Smush.it',
+            'slug'      => 'wp-smushit',
+            'required'  => false,
+        ),
+		array(
+            'name'      => 'Contact Form 7',
+            'slug'      => 'wpcf7',
             'required'  => false,
         ),
 
     );
-
-	// TGM Plugin Activation
-	// Version: 2.4.0
 
     $config = array(
         'default_path' => 'plugins',               // Default absolute path to pre-packaged plugins.
