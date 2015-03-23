@@ -3,19 +3,15 @@
 /* -------------------------------------------------------------------------------- 
 *
 * [WP] Starter - SETUP
+* [WP] Starter is a custom framework developed by Shambix @ http://www.shambix.com
+* Version 2.5
 *
 -------------------------------------------------------------------------------- */
-
-// ERROR HANDLING - If you need to debug
-/*if(current_user_can('edit_posts')) :
-	error_reporting(E_ALL); // everything
-	else :
-	error_reporting(0);
-endif;*/
 
 // THEME
 $theme = wp_get_theme();
 $theme_name = $theme->get( 'TextDomain' ); //use this var when necessary, for inline translations eg. _e('Contact us', $theme_name);
+global $theme_name;
 $locale = get_locale(); 
 
 // WPML 
@@ -26,16 +22,18 @@ if(array_key_exists('sitepress', $GLOBALS)) {
 		$lang = ICL_LANGUAGE_CODE; //use this var when necessary
 	}
 } else {
-	//$lang = 'en';
+	//$lang = 'en'; //set your default lang
 }
 
-
+// ADD THEME SUPPORT
 function wp_starter_theme_setup() {
 	global $theme_name;
-	// ADD THEME SUPPORT
-	add_theme_support('post-thumbnails');      // wp thumbnails
-	add_theme_support( 'menus' );            // wp menus - Add menus from custom_menus.php
-	/*add_theme_support( 'post-formats',      // post formats
+	add_theme_support('post-thumbnails');
+	add_theme_support( 'menus' );
+	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' )); // allows the use of HTML5 markup for the comment lists, comment forms, search forms and galleries
+
+	// This should be placed in the Child Theme
+	/*add_theme_support( 'post-formats',
 		array( 
 			'aside',   // title less blurb
 			'gallery', // gallery of images
@@ -52,10 +50,12 @@ function wp_starter_theme_setup() {
 	//add_theme_support( 'custom-background' );  // wp custom background
 	//add_theme_support('automatic-feed-links'); // rss thingy
 	// to add header image support go here: http://themble.com/support/adding-header-background-image-support/
+	
 	// ADD WOOCOMMERCE 
-	//add_theme_support( 'woocommerce' );
-	// ADD LANGUAGE FILE
-	load_theme_textdomain( $theme_name, get_template_directory() . '/languages' );
+	add_theme_support( 'woocommerce' );
+
+	// ADD LANGUAGE FILE - This will check for po/mo files in the Child theme
+	load_theme_textdomain( $theme_name, get_stylesheet_directory_uri() . '/languages' );
 }
 add_action('after_setup_theme','wp_starter_theme_setup');
 
@@ -68,64 +68,32 @@ add_action('after_setup_theme','wp_starter_theme_setup');
 function load_files() {
 	// ------------- JS
     wp_deregister_script( 'jquery' );
-    wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js', '', '2.1.0');
+	// Latest jQuery - IE <9 not supported
+    wp_register_script( 'jquery', '//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js', '', '2.1.3');
+	// This version is older and discontinued, but is more compatible with existing scripts & plugins
+	//wp_register_script( 'jquery', '//code.jquery.com/jquery-1.11.2.min.js', '', '1.11.2');*/
     wp_enqueue_script( 'jquery' );
-	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js', array('jquery'), '3.3.1', true);
+	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', array('jquery'), '3.3.4', true);
 	wp_enqueue_script( 'boostrap_js' );
-
-	// -------------- CSS
-	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css', '3.3.1', 'all');
-	wp_enqueue_style( 'bootstrap_css' );
-	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css', '4.2.0', 'all');
-	wp_enqueue_style( 'fontawesome_css' );
-	
-	wp_register_style( 'theme_css', ''.get_stylesheet_uri().'', null, 'screen');
-	wp_enqueue_style( 'theme_css' );
-
-	if(file_exists(get_template_directory_uri().'/custom/css/responsive.css')) {
-		wp_register_style( 'resp_theme_css', get_template_directory_uri().'/custom/css/responsive.css', null, 'screen');
-		wp_enqueue_style( 'resp_theme_css' );
-	}
-
-	// -------------- STYLES, ICONS & HELPERS
-	wp_register_script( 'modernizr', get_template_directory_uri() . '/library/js/modernizr.full.min.js', '', '2.8.3', true );
+	wp_register_script( 'modernizr', get_template_directory_uri() . '/library/js/modernizr.custom.js', '', '2.8.3', true );
 	wp_enqueue_script('modernizr');
-
-	/*wp_register_style( 'fancybox_css', ''.get_template_directory_uri() . '/library/helpers/fancybox/jquery.fancybox.css', '2.1.5', 'screen');
-	wp_enqueue_style( 'fancybox_css' );
-	wp_register_script( 'fancybox_js', get_template_directory_uri().'/library/helpers/fancybox/jquery.fancybox.pack.js', array('jquery'), '2.1.5', true);
-	wp_enqueue_script( 'fancybox_js' );*/
-
-	/*wp_register_script( 'videojs_js', '//vjs.zencdn.net/4.2/video.js','', '4.2', true);
-	wp_enqueue_script( 'videojs_js' );
-	wp_register_style( 'videojs_css', '//vjs.zencdn.net/4.2/video-js.css', '4.2', 'all');
-	wp_enqueue_style( 'videojs__css' );*/
-
-	/*wp_register_script( 'img_loaded', ''.get_template_directory_uri().'/library/js/imagesloaded.pkgd.min.js', '', '3.1.8', true);
+	/*wp_register_script( 'img_loaded', ''.get_template_directory_uri().'/library/js/imagesloaded.pkgd.min.js', array('jquery'), '3.1.8', true);
 	wp_enqueue_script( 'img_loaded' );
 
-	wp_register_script( 'isotope', ''.get_template_directory_uri().'/library/js/isotope.pkgd.min.js', '', '2.1.0', true);
+	wp_register_script( 'isotope', ''.get_template_directory_uri().'/library/js/isotope.pkgd.min.js', array('jquery'), '2.1.0', true);
 	wp_enqueue_script( 'isotope' );
 
 	wp_register_script( 'infinite_scroll', ''.get_template_directory_uri().'/library/js/jquery.infinitescroll.min.js', array('jquery'), '2.1.0', true);
-	wp_enqueue_script( 'infinite_scroll' );
+	wp_enqueue_script( 'infinite_scroll' );*/
+	// -------------- CSS
+	wp_register_style( 'normalize_css', get_template_directory_uri().'/library/css/normalize.css, '', '1.1.3', 'screen');
+	wp_enqueue_style( 'normalize_css' );
+	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array('normalize_css'), '4.3.0', 'all');
+	wp_enqueue_style( 'fontawesome_css' );
+	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css', array('normalize_css', 'fontawesome_css'), '3.3.4', 'all');
+	wp_enqueue_style( 'bootstrap_css' );
 
-	wp_register_script( 'easing', '//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js',  array('jquery'), '1.3', true);
-	wp_enqueue_script( 'easing' );*/
-
-	/*wp_register_style( 'metro_normalizer_css', ''.get_template_directory_uri() . '/library/styles/metro/css/m-normalize-min.css', null, 'screen');
-	wp_enqueue_style( 'metro_normalizer_css' );
-	wp_register_style( 'metro_buttons_css', ''.get_template_directory_uri() . '/library/styles/metro/css/m-buttons-min.css', null, 'screen');
-	wp_enqueue_style( 'metro_buttons_css' );
-	wp_register_style( 'metro_forms_css', ''.get_template_directory_uri() . '/library/styles/metro/css/m-forms-min.css', null, 'screen');
-	wp_enqueue_style( 'metro_forms_css' );
-	wp_register_style( 'metro_icons_css', ''.get_template_directory_uri() . '/library/styles/metro/css/m-icons-min.css', null, 'screen');
-	wp_enqueue_style( 'metro_icons_css' );
-	wp_register_style( 'metro_style_css', ''.get_template_directory_uri() . '/library/styles/metro/css/m-styles-min.css', null, 'screen');
-	wp_enqueue_style( 'metro_styles_css' );
-	*/
-
-	// -------------- CUSTOM
+	// Consider using this library for styles, buttons etc: http://metroui.org.ua/
 }
 
 // Don't load this stuff in Admin panel, it will slow down everything and maybe also break it
@@ -135,26 +103,95 @@ if(!is_admin()) {
 
 /* -------------------------------------------------------------------------------- 
 *
-* [WP] Starter - CUSTOM FILES & HELPERS
+* [WP] Starter - CUSTOM FILES
+*
+-------------------------------------------------------------------------------- */
+if(file_exists(get_template_directory_uri().'/library/helpers/wp-imager.php')) {
+	include('library/helpers/wp-imager.php'); // script to resize and cache images and more, download at  https://github.com/Jany-M/WP-Imager/
+}
+//include('library/wordpress/cool_scripts.php'); // wide selection of functions for your theme, some are disabled by default, some you can copy here and customize (but comment them there, then)
+//include('library/wordpress/shortcodes.php');
+
+/* -------------------------------------------------------------------------------- 
+*
+* [WP] Starter - DEV* HELPERS
 *
 -------------------------------------------------------------------------------- */
 
-include('library/helpers/wp-imager.php'); // script to resize and cache images.. and more
-include('library/wordpress/cool_scripts.php'); // wide selection of functions for your theme, some are disabled by default, some you can copy here and customize (but comment them there, then)
-include('library/wordpress/shortcodes.php');
-//include('custom/wordpress/custom_post_types.php'); // use this file to Add Custom Post Types and Custom Taxonomies
-//include('custom/wordpress/custom_panel.php'); // use this file to customize the WP backend/panel
-//include('custom/wordpress/custom_menus.php'); // use this file to add menus
-//include('custom/wordpress/custom_sidebars_widgets.php'); // use this file to add sidebars and custom widgets
-//include('custom/wordpress/custom_meta_boxes.php'); // use this file to add custom meta boxes or edit system ones
+// ERROR HANDLING - If you need to debug
+if(current_user_can('edit_posts')) :
+	//error_reporting(E_ALL); // everything
+	//error_reporting(E_ALL & ~E_NOTICE);// Report all errors except E_NOTICE
+	error_reporting(E_ERROR | E_WARNING | E_PARSE); // Report simple running errors
+	else :
+	error_reporting(0);
+endif;
 
+// DISPLAY SCREEN
+add_action( 'contextual_help', 'add_screen_help', 10, 3 );
+function add_screen_help( $contextual_help, $screen_id, $screen ) {
+ 
+    // The add_help_tab function for screen was introduced in WordPress 3.3.
+    if ( ! method_exists( $screen, 'add_help_tab' ) )
+        return $contextual_help;
+ 
+    global $hook_suffix;
+ 
+    // List screen properties
+    $variables = '<ul style="width:50%;float:left;"> <strong>Screen variables </strong>'
+        . sprintf( '<li> Screen id : %s</li>', $screen_id )
+        . sprintf( '<li> Screen base : %s</li>', $screen->base )
+        . sprintf( '<li>Parent base : %s</li>', $screen->parent_base )
+        . sprintf( '<li> Parent file : %s</li>', $screen->parent_file )
+        . sprintf( '<li> Hook suffix : %s</li>', $hook_suffix )
+        . '</ul>';
+ 
+    // Append global $hook_suffix to the hook stems
+    $hooks = array(
+        "load-$hook_suffix",
+        "admin_print_styles-$hook_suffix",
+        "admin_print_scripts-$hook_suffix",
+        "admin_head-$hook_suffix",
+        "admin_footer-$hook_suffix"
+    );
+ 
+    // If add_meta_boxes or add_meta_boxes_{screen_id} is used, list these too
+    if ( did_action( 'add_meta_boxes_' . $screen_id ) )
+        $hooks[] = 'add_meta_boxes_' . $screen_id;
+ 
+    if ( did_action( 'add_meta_boxes' ) )
+        $hooks[] = 'add_meta_boxes';
+ 
+    // Get List HTML for the hooks
+    $hooks = '<ul style="width:50%;float:left;"> <strong>Hooks </strong> <li>' . implode( '</li><li>', $hooks ) . '</li></ul>';
+ 
+    // Combine $variables list with $hooks list.
+    $help_content = $variables . $hooks;
+ 
+    // Add help panel
+    $screen->add_help_tab( array(
+        'id'      => 'wptuts-screen-help',
+        'title'   => 'Screen Information',
+        'content' => $help_content,
+    ));
+ 
+    return $contextual_help;
+}
+
+/* -------------------------------------------------------------------------------- 
+*
+* [WP] Starter - DEV* REQUIRED & RECOMMENDED PLUGINS
+*
+-------------------------------------------------------------------------------- */
 
 // TGM Plugin Activation
 // Version: 2.4.0
 require_once dirname( __FILE__ ) . '/library/helpers/class-tgm-plugin-activation.php';
-add_action( 'tgmpa_register', 'my_theme_register_required_plugins' );
 
-function my_theme_register_required_plugins() {
+// Uncomment this Action to activate the whole thing
+//add_action( 'tgmpa_register', 'register_required_plugins' );
+
+function register_required_plugins() {
 	$plugins = array(
 
 		// This is an example of how to include a plugin pre-packaged with a theme.
@@ -199,11 +236,11 @@ function my_theme_register_required_plugins() {
             'slug'      => 'types',
             'required'  => false,
         ),
-		array(
+		/*array(
             'name'      => 'WP Smush.it',
             'slug'      => 'wp-smushit',
             'required'  => false,
-        ),
+        ),*/
 		array(
             'name'      => 'Contact Form 7',
             'slug'      => 'wpcf7',
@@ -245,14 +282,4 @@ function my_theme_register_required_plugins() {
     tgmpa( $plugins, $config );
 
 }
-
-/* -------------------------------------------------------------------------------- 
-*
-* [WP] Starter - CUSTOM FUNCTIONS
-*
--------------------------------------------------------------------------------- */
-
-// WOOCOMMERCE
-//remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20);
-
 ?>

@@ -3,13 +3,38 @@
 
 ## About
 
-A bare WordPress theme with the latest Bootstrap, helpers, libraries and styles, ready to use.
-It also contains [WP Imager](https://github.com/Jany-M/WP-Imager)
+A bare WordPress theme with the latest Bootstrap and other WordPress handy functions, ready to use.
+This is meant to be used as a Parent Theme, therefore it needs its companion [WP-Starter Child Theme](#) to work as intended.
+Place both in your WordPress wp-contents/themes folder, and activate the Child Theme.
 
-The scripts have been developed throughout the years for various projects.
-Some libraries
+The scripts have been developed throughout the years, for various projects.
+
+Comes with:
+
+- Twitter Bootstrap JS/CSS
+- Font Awesome CSS
+- Custom Modernizr built
+- ImagesLoaded, Isotope & Infinite Scroll scripts (not registered by default during setup) - Check out the [guide](http://www.shambix.com/en/isotope-twitter-bootstrap-infinite-scroll-fluid-responsive-layout/) to use them all at once
+- Theme Support (menus, html, woocommerce, post-thumbnails)
+- Latest jQuery (not using WordPress built-in one)
+- Localization support (create a /languages folder in Child Theme and place po/mo files there, then use $theme_name as domain name)
+- Developer scripts for backend use / debug
+- Integration with TGM plugin activation, for mandatory/recommended plugins (might move it to Child Theme build)
+- A bunch of handy scripts and shortcodes for buttons and styles in content editor (must uncomment the files from functions.php)
+
+Ready to use with [WP Imager](https://github.com/Jany-M/WP-Imager) - Download it separately and place it inside /library/helpers.
+
 
 ## History
+
+**23/3/2015**
+- `release` version 2.5
+- leaner framework
+- updated boostrap
+- updated functions
+- added fontawesome, modernizr
+- removed styles
+- removed WP theme files (moved to Child Theme)
 
 **10/1/2015**
 - updated bootstrap
@@ -22,5 +47,5 @@ Some libraries
 
 ## Credits
 
-Copyright (c) 2014 - Jany Martelli @ [Shambix](http://www.shambix.com)
+Author: Jany Martelli @ [Shambix](http://www.shambix.com)
 Released under the [GPL v3 License](http://choosealicense.com/licenses/gpl-v3/).

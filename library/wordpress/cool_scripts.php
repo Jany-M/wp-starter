@@ -1,5 +1,7 @@
 <?php
 
+global $theme_name;
+
 /* -------------------------------------------------------------------------------- 
 *
 * [WP] Starter - BACKEND
@@ -7,24 +9,29 @@
 -------------------------------------------------------------------------------- */
 
 // loading jquery reply elements on single pages automatically
-function comments_queue_js(){
-	if (!is_admin()){
+if (!is_admin()){
+	function comments_queue_js(){
 		if ( is_singular() AND comments_open() AND (get_option('thread_comments') == 1)) wp_enqueue_script( 'comment-reply' );
 	}
 }
 // reply on comments script
-add_action('wp_print_scripts', 'comments_queue_js');
+if (!is_admin()){
+	add_action('wp_print_scripts', 'comments_queue_js');
+}
 
 // Rimuovi Feed Commenti
-function remove_comments_rss( $for_comments ) { return; }
+function remove_comments_rss( $for_comments ) {
+	return;
+}
 add_filter('post_comments_feed_link','remove_comments_rss');
 
 // Rimuovi Barra Admin Top
-//function shambixnobar() {
+function remove_wp_adminbar() {
 	if( has_filter('show_admin_bar') ) {
-	add_filter( 'show_admin_bar', '__return_false' ); }
+		add_filter( 'show_admin_bar', '__return_false' );
+	}
     wp_deregister_script( 'admin-bar' );
-    //wp_deregister_style( 'admin-bar' );
+    wp_deregister_style( 'admin-bar' );
     remove_action('wp_footer','wp_admin_bar_render',1000);
 	remove_action('init','wp_admin_bar_init');
 	remove_action('wp_head','wp_admin_bar_render',1000);
@@ -35,12 +42,12 @@ add_filter('post_comments_feed_link','remove_comments_rss');
 	remove_action('wp_footer','wp_admin_bar_js');
 	remove_action('wp_footer','wp_admin_bar_dev_js');
 	add_theme_support( 'admin-bar', array( 'callback' => '__return_false') );
-	/* Disable the Admin Bar. */
 	add_filter( 'show_admin_bar', '__return_false' );
-	/* Remove the Admin Bar preference in user profile */
 	remove_action( 'personal_options', '_admin_bar_preferences' ); 
-/*}
-add_action('init', 'shambixnobar');*/
+}
+if (!is_admin()){
+	add_action('after_setup_theme', 'remove_wp_adminbar');
+}
 
 
 /* -------------------------------------------------------------------------------- 
@@ -55,12 +62,14 @@ function remove_contact_fields($contactmethods) {
 	unset($contactmethods['aim']);
 	unset($contactmethods['jabber']);
 	unset($contactmethods['yim']);
-	//$contactmethods['twitter'] = 'Twitter';
-    //$contactmethods['facebook'] = 'Facebook';
+	//unset($contactmethods['url']); // this actually doesnt work -_-
+	//$contactmethods['twitter'] = 'Twitter'; // add new one
 	return $contactmethods;
 	//}
 }
-add_action( 'user_contactmethods', 'remove_contact_fields' );
+//add_action( 'user_contactmethods', 'remove_contact_fields' );
+add_filter('user_contactmethods','remove_contact_fields',10,1);
+
 
 // -- Remove Personal options crap
 if(is_admin()){
@@ -76,7 +85,7 @@ function prefix_hide_personal_options() { ?>
 <?php }
 
 // -- Remove Nickname for non admin
-/*function hide_nickname() {
+function hide_nickname() {
 	if (current_user_can('manage_options')) return false;
 	?>
 		<script type="text/javascript">
@@ -86,10 +95,10 @@ function prefix_hide_personal_options() { ?>
 		</script>
 	<?php
 	}
-if (is_admin()) add_action('personal_options', 'hide_nickname');*/
+if (is_admin()) add_action('personal_options', 'hide_nickname');
 
 // User Avatars
-function wpu_user_avatars($name, $user) {
+/*function wpu_user_avatars($name, $user) {
 	if ( !$user->user_id )
 		return $name;
 
@@ -98,11 +107,10 @@ function wpu_user_avatars($name, $user) {
 
 	return html("a href='$url' title='$user->user_name'", $avatar);
 }
-add_filter('useronline_display_user', 'wpu_user_avatars', 10, 2);
+add_filter('useronline_display_user', 'wpu_user_avatars', 10, 2);*/
 
 // Check if Gravatar exists
-function validate_gravatar($email) {
-	// Craft a potential url and test its headers
+/*function validate_gravatar($email) {
 	$hash = md5(strtolower(trim($email)));
 	$uri = 'http://www.gravatar.com/avatar/' . $hash . '?d=404';
 	$headers = @get_headers($uri);
@@ -112,7 +120,7 @@ function validate_gravatar($email) {
 		$has_valid_avatar = TRUE;
 	}
 	return $has_valid_avatar;
-}
+}*/
 
 // -- Get authors role
 function get_author_role() {
@@ -128,85 +136,61 @@ function get_author_role() {
 *
 -------------------------------------------------------------------------------- */
 
-// Related Posts Function (call using wp_bootstrap_related_posts(); )
-/*function wp_starter_related_posts() {
-	echo '<ul id="bones-related-posts">';
-	global $post;
-	$tags = wp_get_post_tags($post->ID);
-	if($tags) {
-		foreach($tags as $tag) { $tag_arr .= $tag->slug . ','; }
-        $args = array(
-        	'tag' => $tag_arr,
-        	'numberposts' => 5, /* you can change this to show more */
-        	'post__not_in' => array($post->ID)
-     	);
-        $related_posts = get_posts($args);
-        if($related_posts) {
-        	foreach ($related_posts as $post) : setup_postdata($post); ?>
-	           	<li class="related_post"><a href="<?php the_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></li>
-	        <?php endforeach; } 
-	    else { ?>
-            <li class="no_related_post">No Related Posts Yet!</li>
-		<?php }
+// Related Posts by Tag
+if (!function_exists('related_posts')) {
+	function related_tag_posts($before = '<ul>', $num = '3', $after = '</ul>') {
+		//echo '<ul>';
+		global $post;
+		$tags = wp_get_post_tags($post->ID);
+		if($tags) {
+			foreach($tags as $tag) {
+				$tag_arr .= $tag->slug . ',';
+			}
+		}
+		$args = array(
+			'tag' => $tag_arr,
+			'numberposts' => $num,
+			'post__not_in' => array($post->ID)
+		);
+		$related_posts = get_posts($args);
+		if($related_posts) {
+			$output = $before;
+			foreach ($related_posts as $post) : setup_postdata($post);
+				$output .= '<li class="related_post"><a href="'.get_the_permalink().'" title="'.get_the_title_attribute().'">'.get_the_title().'</a></li>';
+			endforeach;
+			wp_reset_query(); wp_reset_postdata();
+			$output .= $after;
+			return $output;
+		} else {
+			//$output = '<li class="no_related_post">No Related Posts</li>';
+			//return $output;
+			//return;
+		}
+		//echo '</ul>';
 	}
-	wp_reset_query();
-	echo '</ul>';
-}*/
+}
 
 /* -------------------------------------------------------------------------------- 
 *
-* [WP] Starter - TRIM TITLES & EXCERPTS
+* [WP] Starter - EXCERPTS
 *
 -------------------------------------------------------------------------------- */
 
-// Titoli
-function short_title($after = '', $length) {
-	$mytitle = get_the_title();
-	if ( strlen($mytitle) > $length ) {
-	$mytitle = substr($mytitle,0,$length);
-	echo $mytitle . $after;
-	} else {
-	echo $mytitle;
-	}
-}
-
-// Tronca i titoli
-function truncate_title($after = '', $length) {
-	$mytitle = explode(' ', get_the_title(), $length);
-	if (count($mytitle)>=$length) {
-		array_pop($mytitle);
-		$mytitle = implode(" ",$mytitle). $after;
-	} else {
-		$mytitle = implode(" ",$mytitle);
-	}
-	echo $mytitle;
-}
-
 // Custom Excerpt
-function shambixexcerpt($num) {
-    $limit = $num+1;
-    $excerpt = explode(' ', get_the_excerpt(), $limit);
-    array_pop($excerpt);
-    //$excerpt = implode(" ",$excerpt)."... (<a href='" .get_permalink($post->ID) ." '>Leggi</a>)";
-    $excerpt = implode(" ",$excerpt)."...";
-    echo strip_tags($excerpt);
+if (!function_exists('custom_excerpt')) {
+	function custom_excerpt($num) {
+		global $post;
+		$limit = $num+1;
+		//get_post_field('post_excerpt', $post->ID)
+		$excerpt = explode(' ', get_the_excerpt(), $limit);
+		array_pop($excerpt);
+		$excerpt = implode(" ", $excerpt).' &hellip;';
+		$excerpt = strip_tags($excerpt);
+		$excerpt = wpautop($excerpt, false);
+		echo $excerpt;
+	}
 }
 
-// Custom Excerpt + Remove duplicated title in excerpt
-function shambixexcerpt_titleoff($num) {
-    $limit = $num+1;
-    $excerpt = explode(' ', get_the_excerpt(), $limit);
-    array_pop($excerpt);
-    //$excerpt = implode(" ",$excerpt)."... (<a href='" .get_permalink($post->ID) ." '>Leggi</a>)";
-    $excerpt = implode(" ",$excerpt)."...";
-	// remove that shit
-	$title = get_the_title();
-	$excerpt = str_replace($title, '', $excerpt);
-	$regex = '#(<script[^>]*>)\s?(.*)?\s?(<\/script\2>)#';
-	$excerpt = preg_replace($regex,'', $excerpt);
-	$excerpt = str_replace(']]>', ']]&gt;', $excerpt);
-    echo strip_tags($excerpt);
-}
 
 /* -------------------------------------------------------------------------------- 
 *
@@ -260,17 +244,17 @@ function is_parent( $parent_id, $post_id ) {
 // Is child of category?
 function is_child($parent) {
 	if ( is_category() ) {
-	//$parent = 8;
-	$categories = get_categories('include='.get_query_var('cat'));
-	if ( $categories[0]->category_parent == $parent ) {
-	//echo 'category ' . $categories[0]->name . ' is a child of category ' . $parent;
-	return true;
-	}
+		//$parent = 8;
+		$categories = get_categories('include='.get_query_var('cat'));
+		if ( $categories[0]->category_parent == $parent ) {
+			//echo 'category ' . $categories[0]->name . ' is a child of category ' . $parent;
+			return true;
+		}
 	}
 }
 
 // Post in descendant categories?
-if ( ! function_exists( 'post_is_in_descendant_category' ) ) {
+if (!function_exists( 'post_is_in_descendant_category' ) ) {
 	function post_is_in_descendant_category( $cats, $_post = null ) {
 		foreach ( (array) $cats as $cat ) {
 			// get_term_children() accepts integer ID only
@@ -296,88 +280,29 @@ function get_page_slug($pageid) {
 -------------------------------------------------------------------------------- */
 
 // Pagination
-function shambix_pag() {
-	wp_reset_query();
-	wp_reset_postdata();
-	global $wp_query;
-    $big = 99999999;
-    $pagination = paginate_links(array(
-    'base' => str_replace($big, '%#%', get_pagenum_link($big)),
-    'format' => '?page=%#%',
-    'total' => $wp_query->max_num_pages,
-    'current' => max(1, get_query_var('paged')),
-    'show_all' => false,
-    'end_size' => 2,
-    'mid_size' => 3,
-    'prev_next' => true,
-    'prev_text' => __('Previous', 'shambix'),
-    'next_text' => __('Next', 'shambix'),
-    'type' => 'list'
-    ));
-	$pagination = str_replace('page-numbers', 'pagination', $pagination);
-	echo $pagination;
+if (!function_exists('custom_pagination')) {
+	function custom_pagination($prev = 'Previous', $next = 'Next') {
+		wp_reset_query();
+		wp_reset_postdata();
+		global $wp_query;
+		$big = 99999999;
+		$pagination = paginate_links(array(
+		'base' => str_replace($big, '%#%', get_pagenum_link($big)),
+		'format' => '?page=%#%',
+		'total' => $wp_query->max_num_pages,
+		'current' => max(1, get_query_var('paged')),
+		'show_all' => false,
+		'end_size' => 2,
+		'mid_size' => 3,
+		'prev_next' => true,
+		'prev_text' => __($prev, $theme_name),
+		'next_text' => __($next, $theme_name),
+		'type' => 'list'
+		));
+		$pagination = str_replace('page-numbers', 'pagination', $pagination);
+		echo $pagination;
+	}
 }
-
-// Numeric Page Navi (built into the theme by default)
-/*Developed by: Eddie Machado
-URL: http://themble.com/bones/*/
-/*function page_navi($before = '', $after = '') {
-	global $wpdb, $wp_query;
-	$request = $wp_query->request;
-	$posts_per_page = intval(get_query_var('posts_per_page'));
-	$paged = intval(get_query_var('paged'));
-	$numposts = $wp_query->found_posts;
-	$max_page = $wp_query->max_num_pages;
-	if ( $numposts <= $posts_per_page ) { return; }
-	if(empty($paged) || $paged == 0) {
-		$paged = 1;
-	}
-	$pages_to_show = 7;
-	$pages_to_show_minus_1 = $pages_to_show-1;
-	$half_page_start = floor($pages_to_show_minus_1/2);
-	$half_page_end = ceil($pages_to_show_minus_1/2);
-	$start_page = $paged - $half_page_start;
-	if($start_page <= 0) {
-		$start_page = 1;
-	}
-	$end_page = $paged + $half_page_end;
-	if(($end_page - $start_page) != $pages_to_show_minus_1) {
-		$end_page = $start_page + $pages_to_show_minus_1;
-	}
-	if($end_page > $max_page) {
-		$start_page = $max_page - $pages_to_show_minus_1;
-		$end_page = $max_page;
-	}
-	if($start_page <= 0) {
-		$start_page = 1;
-	}
-		
-	echo $before.'<ul class="pagination">'."";
-	if ($paged > 1) {
-		$first_page_text = "&laquo";
-		echo '<li class="prev"><a href="'.get_pagenum_link().'" title="First">'.$first_page_text.'</a></li>';
-	}
-		
-	$prevposts = get_previous_posts_link('&larr; Previous');
-	if($prevposts) { echo '<li>' . $prevposts  . '</li>'; }
-	else { echo '<li class="disabled"><a href="#">&larr; Previous</a></li>'; }
-	
-	for($i = $start_page; $i  <= $end_page; $i++) {
-		if($i == $paged) {
-			echo '<li class="active"><a href="#">'.$i.'</a></li>';
-		} else {
-			echo '<li><a href="'.get_pagenum_link($i).'">'.$i.'</a></li>';
-		}
-	}
-	echo '<li class="">';
-	next_posts_link('Next &rarr;');
-	echo '</li>';
-	if ($end_page < $max_page) {
-		$last_page_text = "&raquo;";
-		echo '<li class="next"><a href="'.get_pagenum_link($max_page).'" title="Last">'.$last_page_text.'</a></li>';
-	}
-	echo '</ul>'.$after."";
-}*/
 
 /* -------------------------------------------------------------------------------- 
 *
@@ -385,7 +310,6 @@ URL: http://themble.com/bones/*/
 *
 -------------------------------------------------------------------------------- */
 
-// remove the p from around imgs (http://css-tricks.com/snippets/wordpress/remove-paragraph-tags-from-around-images/)
 function filter_ptags_on_images($content){
    return preg_replace('/<p>\s*(<a .*>)?\s*(<img .* \/>)\s*(<\/a>)?\s*<\/p>/iU', '\1\2\3', $content);
 }
@@ -409,35 +333,11 @@ add_filter( 'pre_get_posts', 'sh_search_filter' );*/
 
 /* -------------------------------------------------------------------------------- 
 *
-* [WP] Starter - MULTILANG (qTranslate / WPML)
+* [WP] Starter - MULTILANG (WPML)
 *
 -------------------------------------------------------------------------------- */
 
-// qTranslate - return url
-/*function curPageURL() {
-    $pageURL = 'http';
-     if ($_SERVER["HTTPS"] == "on") {
-        $pageURL .= "s";
-    }
-     $pageURL .= "://";
-     if ($_SERVER["SERVER_PORT"] != "80") {
-          $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-     }
-    else {
-          $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-     }
-return $pageURL;
-}*/
-// qTranslate - Search
-/*function labelsearch(){
-	if(qtrans_getLanguage()=='it'){
-		echo 'cerca nel sito...';
-	} else {
-		echo 'search this website...';
-	}
-}*/
-
-// WPML
+// Custom Lang Selector
 /*function languages_list_header(){
     $languages = icl_get_languages('skip_missing=0&orderby=code');
     if(!empty($languages)){
@@ -448,6 +348,307 @@ return $pageURL;
         }
     }
 }*/
+
+/* -------------------------------------------------------------------------------- 
+*
+* [WP] Starter - FRONTEND
+*
+-------------------------------------------------------------------------------- */
+
+// Cleaning up the Wordpress Head output
+function wp_starter_head_cleanup() {
+	remove_action( 'wp_head', 'feed_links_extra', 3 );                    // Category Feeds
+	remove_action( 'wp_head', 'feed_links', 2 );                          // Post and Comment Feeds
+	remove_action( 'wp_head', 'rsd_link' );                               // EditURI link
+	remove_action( 'wp_head', 'wlwmanifest_link' );                       // Windows Live Writer
+	remove_action( 'wp_head', 'index_rel_link' );                         // index link
+	remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );            // previous link
+	remove_action( 'wp_head', 'start_post_rel_link', 10, 0 );             // start link
+	remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 ); // Links for Adjacent Posts
+	remove_action( 'wp_head', 'wp_generator' );                           // WP version
+	//remove_action( 'wp_head', 'wp_shortlink_wp_head', 10, 0 );		  // Uncomment if you are using a custom url shortener
+}
+add_action('init', 'wp_starter_head_cleanup');
+
+// More cleanup - optional
+/*function wp_starter_head_cleanup_extra() {
+	add_filter( 'index_rel_link', 'remove_code' );
+	add_filter( 'parent_post_rel_link', 'remove_code' );
+	add_filter( 'start_post_rel_link', 'remove_code' );
+	add_filter( 'previous_post_rel_link', 'remove_code' );
+	add_filter( 'next_post_rel_link', 'remove_code' );
+	add_filter('post_comments_feed_link','remove_code');
+}
+function remove_code( $data ) {
+	return false;
+}
+add_action('init', 'wp_starter_head_cleanup_extra');*/
+
+// remove WP version from RSS
+function wp_bootstrap_rss_version() {
+	return '';
+}
+add_filter('the_generator', 'wp_bootstrap_rss_version');
+
+// Rimuovi lang attribute per HTML5
+/*function create_valid_xhtml_1_1($language_attributes) {
+	echo '';
+}
+add_filter('language_attributes', 'create_valid_xhtml_1_1');*/
+
+// Contact Form 7
+/*if(is_home() || function_exists( 'wpcf7_enqueue_scripts' )) {
+	wpcf7_enqueue_scripts();
+	wpcf7_enqueue_styles();
+}*/
+
+// Delete from Front-End Link
+/*function wp_delete_post_link($link = 'Delete This', $before = '', $after = '', $title="Move this item to the Trash", $cssClass="delete-post") {
+    global $post;
+    if ( $post->post_type == 'page' ) {
+        if ( !current_user_can( 'edit_page' ) )
+            return;
+    } else {
+        if ( !current_user_can( 'edit_post' ) )
+            return;
+    }
+    $delLink = wp_nonce_url( site_url() . "/wp-admin/post.php?action=trash&post=" . $post->ID, 'trash-' . $post->post_type . '_' . $post->ID);
+    $link = '<a class="' . $cssClass . '" href="' . $delLink . '" onclick="javascript:if(!confirm(\'Are you sure you want to move this item to trash?\')) return false;" title="'.$title.'" />'.$link."</a>";
+    //return $before . $link . $after;
+	echo $before . $link . $after;
+}*/
+
+// BREADCRUMBS
+// https://gist.github.com/melissacabral/4032941
+// http://www.html.it/articoli/breadcrumb-wordpress-senza-plugin/
+if (!function_exists('breadcrumbs')) {
+	function breadcrumbs() {
+		global $post;
+
+		$text['home']     = 'Home'; // text for the 'Home' link
+		$text['category'] = 'Category "%s"'; // text for a category page
+		$text['tax'] 	  = 'Archive for "%s"'; // text for a taxonomy page
+		$text['search']   = 'Search Results for "%s" Query'; // text for a search results page
+		$text['tag']      = 'Posts Tagged "%s"'; // text for a tag page
+		$text['author']   = 'Articles Posted by %s'; // text for an author page
+		$text['404']      = 'Error 404'; // text for the 404 page
+
+		$showCurrent = 1; // 1 - show current post/page title in breadcrumbs, 0 - don't show
+		$showOnHome  = 0; // 1 - show breadcrumbs on the homepage, 0 - don't show
+		$delimiter   = ' / '; // delimiter between crumbs
+		$before      = '<li class="active">'; // tag before the current crumb
+		$after       = '</li>'; // tag after the current crumb
+			
+		$homeLink = get_bloginfo('url') . '/';
+		$linkBefore = '<li typeof="v:Breadcrumb">';
+		$linkAfter = '</li>';
+		$linkAttr = ' rel="v:url" property="v:title"';
+		$link = $linkBefore . '<a' . $linkAttr . ' href="%1$s">%2$s</a>' . $linkAfter;
+
+		if (is_home() || is_front_page()) {
+
+			if ($showOnHome == 1) echo '<div id="crumbs"><a href="' . $homeLink . '">' . $text['home'] . '</a></div>';
+
+		} else {
+
+			echo '<div id="crumbs" xmlns:v="http://rdf.data-vocabulary.org/#">' . sprintf($link, $homeLink, $text['home']) . $delimiter;
+
+			
+			if ( is_category() ) {
+				$thisCat = get_category(get_query_var('cat'), false);
+				if ($thisCat->parent != 0) {
+					$cats = get_category_parents($thisCat->parent, TRUE, $delimiter);
+					$cats = str_replace('<a', $linkBefore . '<a' . $linkAttr, $cats);
+					$cats = str_replace('</a>', '</a>' . $linkAfter, $cats);
+					echo $cats;
+				}
+				echo $before . sprintf($text['category'], single_cat_title('', false)) . $after;
+
+			} elseif( is_tax() ){
+				$thisCat = get_category(get_query_var('cat'), false);
+				if ($thisCat->parent != 0) {
+					$cats = get_category_parents($thisCat->parent, TRUE, $delimiter);
+					$cats = str_replace('<a', $linkBefore . '<a' . $linkAttr, $cats);
+					$cats = str_replace('</a>', '</a>' . $linkAfter, $cats);
+					echo $cats;
+				}
+				echo $before . sprintf($text['tax'], single_cat_title('', false)) . $after;
+			
+			}elseif ( is_search() ) {
+				echo $before . sprintf($text['search'], get_search_query()) . $after;
+
+			} elseif ( is_day() ) {
+				echo sprintf($link, get_year_link(get_the_time('Y')), get_the_time('Y')) . $delimiter;
+				echo sprintf($link, get_month_link(get_the_time('Y'),get_the_time('m')), get_the_time('F')) . $delimiter;
+				echo $before . get_the_time('d') . $after;
+
+			} elseif ( is_month() ) {
+				echo sprintf($link, get_year_link(get_the_time('Y')), get_the_time('Y')) . $delimiter;
+				echo $before . get_the_time('F') . $after;
+
+			} elseif ( is_year() ) {
+				echo $before . get_the_time('Y') . $after;
+
+			} elseif ( is_single() && !is_attachment() ) {
+				if ( get_post_type() != 'post' ) {
+					$post_type = get_post_type_object(get_post_type());
+					$slug = $post_type->rewrite;
+					printf($link, $homeLink . '/' . $slug['slug'] . '/', $post_type->labels->singular_name);
+					if ($showCurrent == 1) echo $delimiter . $before . get_the_title() . $after;
+				} else {
+					$cat = get_the_category(); $cat = $cat[0];
+					$cats = get_category_parents($cat, TRUE, $delimiter);
+					if ($showCurrent == 0) $cats = preg_replace("#^(.+)$delimiter$#", "$1", $cats);
+					$cats = str_replace('<a', $linkBefore . '<a' . $linkAttr, $cats);
+					$cats = str_replace('</a>', '</a>' . $linkAfter, $cats);
+					echo $cats;
+					if ($showCurrent == 1) echo $before . get_the_title() . $after;
+				}
+
+			} elseif ( !is_single() && !is_page() && get_post_type() != 'post' && !is_404() ) {
+				$post_type = get_post_type_object(get_post_type());
+				echo $before . $post_type->labels->singular_name . $after;
+
+			} elseif ( is_attachment() ) {
+				$parent = get_post($post->post_parent);
+				$cat = get_the_category($parent->ID); $cat = $cat[0];
+				$cats = get_category_parents($cat, TRUE, $delimiter);
+				$cats = str_replace('<a', $linkBefore . '<a' . $linkAttr, $cats);
+				$cats = str_replace('</a>', '</a>' . $linkAfter, $cats);
+				echo $cats;
+				printf($link, get_permalink($parent), $parent->post_title);
+				if ($showCurrent == 1) echo $delimiter . $before . get_the_title() . $after;
+
+			} elseif ( is_page() && !$post->post_parent ) {
+				if ($showCurrent == 1) echo $before . get_the_title() . $after;
+
+			} elseif ( is_page() && $post->post_parent ) {
+				$parent_id  = $post->post_parent;
+				$breadcrumbs = array();
+				while ($parent_id) {
+					$page = get_page($parent_id);
+					$breadcrumbs[] = sprintf($link, get_permalink($page->ID), get_the_title($page->ID));
+					$parent_id  = $page->post_parent;
+				}
+				$breadcrumbs = array_reverse($breadcrumbs);
+				for ($i = 0; $i < count($breadcrumbs); $i++) {
+					echo $breadcrumbs[$i];
+					if ($i != count($breadcrumbs)-1) echo $delimiter;
+				}
+				if ($showCurrent == 1) echo $delimiter . $before . get_the_title() . $after;
+
+			} elseif ( is_tag() ) {
+				echo $before . sprintf($text['tag'], single_tag_title('', false)) . $after;
+
+			} elseif ( is_author() ) {
+				global $author;
+				$userdata = get_userdata($author);
+				echo $before . sprintf($text['author'], $userdata->display_name) . $after;
+
+			} elseif ( is_404() ) {
+				echo $before . $text['404'] . $after;
+			}
+
+			if ( get_query_var('paged') ) {
+				if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() ) echo ' (';
+				echo __('Page') . ' ' . get_query_var('paged');
+				if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() ) echo ')';
+			}
+
+			echo '</div>';
+
+		}
+	}
+}
+
+/* -------------------------------------------------------------------------------- 
+*
+* [WP] Starter - WOOCOMMERCE
+*
+-------------------------------------------------------------------------------- */
+
+// Auto complete WooCommerce order
+/*add_action( 'woocommerce_thankyou', 'custom_woocommerce_auto_complete_order' );
+function custom_woocommerce_auto_complete_order( $order_id ) {
+    global $woocommerce;
+ 
+    if ( !$order_id )
+        return;
+    $order = new WC_Order( $order_id );
+    $order->update_status( 'completed' );
+}*/
+
+/* -------------------------------------------------------------------------------- 
+*
+* [WP] Starter - CREDITS & LOGIN
+*
+-------------------------------------------------------------------------------- */
+
+// Backend Footer Credits
+// Please leave this in place or add your own links next to ours.
+function wp_starter_admin_footer() {
+	echo '<div id="shambix_credits"><p>Theme built with <a href="http://www.shambix.com/wp-starter" target="_blank">[WP] Starter</a> - Developed by <a href="http://www.shambix.com" target="_blank">Shambix</a> for WordPress.</p></div>';
+}
+add_filter('admin_footer_text', 'wp_starter_admin_footer');
+
+// Customize Footer for Login page
+function custom_login_css() {
+	?>
+	<style type="text/css">
+		#shambix_credits {
+			margin: auto;
+			padding: 8% 0 0;
+			width: 320px;
+			text-align: center;
+		}
+	</style>
+	<?php 
+}
+add_action('login_head', 'custom_login_css');
+function wp_starter_login_footer() {
+	echo '<div id="shambix_credits" class="mute credits"><p id="backtoblog"><a href="https://github.com/Jany-M/WP-Starter" target="_blank">[WP] Starter</a> developed by <a href="http://www.shambix.com" target="_blank">Shambix</a></p></div>';
+}
+add_action('login_footer', 'wp_starter_login_footer');
+
+// Custom Login form CSS
+/*function wp_starter_login_css() {
+	echo '<link rel="stylesheet" href="' . get_stylesheet_directory_uri() . '/library/css/login.css">';
+}
+add_action('login_head', 'wp_starter_login_css');*/
+
+// Custom Login form Image
+//global $login_img_url, $login_img_w, $login_img_h;
+
+if (!function_exists('wp_starter_login_logo') || !function_exists('custom_login_logo')) {
+	function wp_starter_login_logo() {
+		$login_img_url = get_stylesheet_directory_uri().'/library/helpers/shambix.png';
+		$login_img_w = '100px';
+		$login_img_h = '100px';
+		//echo 'from else = '.$login_img_url.$login_img_w.$login_img_h;
+		?>
+		<style type="text/css">
+			body.login div#login h1 a {
+				background-image: url(<?php echo $login_img_url; ?>);
+				background-size: auto auto;
+				padding-bottom: 30px;
+				width: <?php echo $login_img_w; ?>;
+				height: <?php echo $login_img_h; ?>;
+			}
+		</style>
+	<?php }
+	add_action('login_head', 'wp_starter_login_logo');
+}
+
+function wp_starter_login_url() {
+	get_bloginfo('siteurl');
+}
+add_filter('login_headerurl', 'wp_starter_login_url');
+
+function wp_starter_login_title() {
+	get_option('blogname');
+}
+add_filter('login_headertitle', 'wp_starter_login_title');
+
 
 /* -------------------------------------------------------------------------------- 
 *
@@ -525,197 +726,5 @@ return $pageURL;
 		}
 	}
 }*/
-
-/* -------------------------------------------------------------------------------- 
-*
-* [WP] Starter - COMMENTS
-*
--------------------------------------------------------------------------------- */
-
-// COMMENTS
-function shambix_comment( $comment, $args, $depth ) {
-	$GLOBALS['comment'] = $comment;
-	switch ( $comment->comment_type ) :
-		case 'pingback' :
-		case 'trackback' :
-		// Display trackbacks differently than normal comments.
-	?>
-	<li <?php comment_class(); ?> id="comment-<?php comment_ID(); ?>">
-		<div class="alert"><p><?php _e( 'Someone talked about this post here:', $theme_name ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( __( '(Edit)', 'shambix' ), '<span class="edit-link">', '</span>' ); ?></p></div><hr>
-	<?php
-			break;
-		default :
-		// Proceed with normal comments.
-		global $post;
-	?>
-	<li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>">
-		<div id="comment-<?php comment_ID(); ?>" class="comment">
-
-			<?php
-				//$comauth = the_author_meta('nickname', $comment->user_id);
-				$comemail = $comment->comment_author_email;
-				if(validate_gravatar($comemail)) :
-					echo '<div class="hidden-phone">';
-					echo get_avatar( $comment, 100,90 );
-					echo '</div>';
-				else :
-					//$altgrav = get_bloginfo('template_url').'/img/grumpy-cat.png';
-					//echo '<div class="hidden-phone"><img src="'.get_bloginfo('url').'/cache_img/tt.php?src='.$altgrav.'&amp;w=100&amp;h=100&amp;zc=1&amp;q=100" alt="No. I dont like Gravatars." desc/></div>';
-				endif;
-			?>
-
-			<!-- <div class="post_author">
-				<?php
-					/*if ( $comment->user_id === $post->post_author ) :
-					echo '<span class="label label-info"> ' . __( 'Post author', $theme_name ) . '</span>';
-					endif;*/
-				?>
-			</div> -->
-
-			<div class="comment-meta comment-author vcard">
-				<?php
-					printf( '<cite class="fn"><strong>%1$s</strong></cite>',
-						( $comment->user_id === $post->post_author ) ? '<span class="label label-info"> ' . get_the_author_meta('display_name', $post->post_author) . '</span>' : get_comment_author()
-					);
-					printf( '<a class="pull-right" href="%1$s"><small><time datetime="%2$s">%3$s</time></small></a>',
-						esc_url( get_comment_link( $comment->comment_ID ) ),
-						'',
-						/* translators: 1: date, 2: time */
-						sprintf( __( '%1$s', $theme_name ), get_comment_date(), '' )
-					);
-				?>
-			</div><!-- .comment-meta -->
-
-			<?php if ( '0' == $comment->comment_approved ) : ?>
-				<p class="comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.', $theme_name ); ?></p>
-			<?php endif; ?>
-
-			<div class="comment-content comment">
-				<?php comment_text(); ?>
-				<?php edit_comment_link( __( 'Edit', $theme_name ), '<p class="edit-link">', '</p>' ); ?>
-				<div class="reply">
-					<?php comment_reply_link( array_merge( $args, array( 'reply_text' => __( 'Reply', $theme_name ), 'after' => ' <span>&darr;</span>', 'depth' => $depth, 'max_depth' => $args['max_depth'] ) ) ); ?>
-				</div><!-- .reply -->
-				<hr>
-			</div><!-- .comment-content -->
-
-		</div><!-- #comment-## -->
-
-		</li>
-	<?php
-		break;
-	endswitch; // end comment_type check
-}
-
-/* -------------------------------------------------------------------------------- 
-*
-* [WP] Starter - FRONTEND
-*
--------------------------------------------------------------------------------- */
-
-// Cleaning up the Wordpress Head output
-function wp_starter_head_cleanup() {
-	remove_action( 'wp_head', 'feed_links_extra', 3 );                    // Category Feeds
-	remove_action( 'wp_head', 'feed_links', 2 );                          // Post and Comment Feeds
-	remove_action( 'wp_head', 'rsd_link' );                               // EditURI link
-	remove_action( 'wp_head', 'wlwmanifest_link' );                       // Windows Live Writer
-	remove_action( 'wp_head', 'index_rel_link' );                         // index link
-	remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );            // previous link
-	remove_action( 'wp_head', 'start_post_rel_link', 10, 0 );             // start link
-	remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 ); // Links for Adjacent Posts
-	remove_action( 'wp_head', 'wp_generator' );                           // WP version
-	//remove_action( 'wp_head', 'wp_shortlink_wp_head', 10, 0 );		  // Uncomment if you are using a custom url shortener
-}
-add_action('init', 'wp_starter_head_cleanup');
-
-// More cleanup - optional
-/*function wp_starter_head_cleanup_extra() {
-	add_filter( 'index_rel_link', 'remove_code' );
-	add_filter( 'parent_post_rel_link', 'remove_code' );
-	add_filter( 'start_post_rel_link', 'remove_code' );
-	add_filter( 'previous_post_rel_link', 'remove_code' );
-	add_filter( 'next_post_rel_link', 'remove_code' );
-	add_filter('post_comments_feed_link','remove_code');
-}
-function remove_code( $data ) {
-	return false;
-}
-add_action('init', 'wp_starter_head_cleanup_extra');*/
-
-// remove WP version from RSS
-function wp_bootstrap_rss_version() { return ''; }
-add_filter('the_generator', 'wp_bootstrap_rss_version');
-
-// Rimuovi lang attribute per HTML5
-function create_valid_xhtml_1_1($language_attributes) {
-	echo '';
-}
-add_filter('language_attributes', 'create_valid_xhtml_1_1');
-// qTranslate header
-//add_filter('qtrans_header', 'create_valid_xhtml_1_1');
-
-// Contact Form 7
-if(is_home() || function_exists( 'wpcf7_enqueue_scripts' )) {
-	wpcf7_enqueue_scripts();
-	wpcf7_enqueue_styles();
-}
-
-// Delete from Front-End Link
-function wp_delete_post_link($link = 'Delete This', $before = '', $after = '', $title="Move this item to the Trash", $cssClass="delete-post") {
-    global $post;
-    if ( $post->post_type == 'page' ) {
-        if ( !current_user_can( 'edit_page' ) )
-            return;
-    } else {
-        if ( !current_user_can( 'edit_post' ) )
-            return;
-    }
-    $delLink = wp_nonce_url( site_url() . "/wp-admin/post.php?action=trash&post=" . $post->ID, 'trash-' . $post->post_type . '_' . $post->ID);
-    $link = '<a class="' . $cssClass . '" href="' . $delLink . '" onclick="javascript:if(!confirm(\'Are you sure you want to move this item to trash?\')) return false;" title="'.$title.'" />'.$link."</a>";
-    //return $before . $link . $after;
-	echo $before . $link . $after;
-}
-
-// LOGIN PAGE
-/*function wp_starter_login_css() {
-	echo '<link rel="stylesheet" href="' . get_stylesheet_directory_uri() . '/library/css/login.css">';
-}
-// changing the logo link from wordpress.org to your site 
-function wp_starter_login_url() { echo bloginfo('url'); }
-// changing the alt text on the logo to show your site name 
-function wp_starter_login_title() { echo get_option('blogname'); }
-//add_action('login_head', 'wp_starter_login_css'); //uncomment to activate
-//add_filter('login_headerurl', 'wp_starter_login_url'); // uncomment to activate
-//add_filter('login_headertitle', 'wp_starter_login_title'); //uncomment to activate
-*/
-
-/* -------------------------------------------------------------------------------- 
-*
-* [WP] Starter - WOOCOMMERCE
-*
--------------------------------------------------------------------------------- */
-
-// Auto complete WooCommerce order
-/*add_action( 'woocommerce_thankyou', 'custom_woocommerce_auto_complete_order' );
-function custom_woocommerce_auto_complete_order( $order_id ) {
-    global $woocommerce;
- 
-    if ( !$order_id )
-        return;
-    $order = new WC_Order( $order_id );
-    $order->update_status( 'completed' );
-}*/
-
-/* -------------------------------------------------------------------------------- 
-*
-* [WP] Starter - CREDITS
-*
--------------------------------------------------------------------------------- */
-
-// Please leave this in place or add your own links next to ours.
-function wp_starter_admin_footer() {
-	echo '<span id="footer-thankyou">Theme built with <a href="http://www.shambix.com/wp-starter" target="_blank">[WP] Starter</a> - Developed by <a href="http://www.shambix.com" target="_blank">Shambix</a></span>';
-}
-add_filter('admin_footer_text', 'wp_starter_admin_footer');
 
 ?>

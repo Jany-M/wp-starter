@@ -1,24 +1,18 @@
-@import url('library/css/normalize.css');
-@import url('custom/css/style.css');
-
 /*
-Theme Name: Name
-Template:     name (of parent)
-Text Domain: slug of name (no spaces no capitals)
-Description: 
-Author: shambix
+Theme Name: [WP] Starter
+Text Domain: wp-starter
+Description: [WP] Starter is a custom framework developed by Shambix.
+Author: Shambix
 Author URI: http://www.shambix.com
-Version: 1
+Version: 2.5
 */
-
-/* if child import parent css */
-/*@import url("../themename/style.css");*/
 
 /* IMG */
 img[class*="align"],
 img[class*="wp-image-"],
 img[class*="attachment-"] {
 	height: auto; 
+	padding: 10px;
 }
 img.size-full,
 img.size-large,
@@ -31,12 +25,21 @@ img.wp-post-image {
 /* Images */
 .alignleft {
 	float: left;
+	padding-left: 0;
 }
 .alignright {
 	float: right;
+	padding-right: 0;
 }
 .aligncenter {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+/* Login Page Credits */
+#shambix_credits {
+	margin: auto;
+    padding: 8% 0 0;
+    width: 320px;
 }
