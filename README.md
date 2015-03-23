@@ -47,8 +47,11 @@ Ready to use with [WP Imager](https://github.com/Jany-M/WP-Imager) - Download it
 
 ## Credits
 
-[WP] Starter Child Theme: Jany Martelli @ [Shambix](http://www.shambix.com)
 [Twitter Bootstrap](https://github.com/twbs/bootstrap)
+
+## Author
+
+Jany Martelli @ [Shambix](http://www.shambix.com)
 
 ## License
 
