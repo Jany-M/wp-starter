@@ -1,5 +1,4 @@
 <?php
-
 /* -------------------------------------------------------------------------------- 
 *
 * [WP] Starter - SETUP
@@ -31,25 +30,6 @@ function wp_starter_theme_setup() {
 	add_theme_support('post-thumbnails');
 	add_theme_support( 'menus' );
 	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' )); // allows the use of HTML5 markup for the comment lists, comment forms, search forms and galleries
-
-	// This should be placed in the Child Theme
-	/*add_theme_support( 'post-formats',
-		array( 
-			'aside',   // title less blurb
-			'gallery', // gallery of images
-			'link',    // quick link to other site
-			'image',   // an image
-			'quote',   // a quick quote
-			'status',  // a Facebook like status update
-			'video',   // video 
-			'audio',   // audio
-			'chat'     // chat transcript 
-		)
-	);*/	
-	//set_post_thumbnail_size(125, 125, true);   // default thumb size
-	//add_theme_support( 'custom-background' );  // wp custom background
-	//add_theme_support('automatic-feed-links'); // rss thingy
-	// to add header image support go here: http://themble.com/support/adding-header-background-image-support/
 	
 	// ADD WOOCOMMERCE 
 	add_theme_support( 'woocommerce' );
@@ -109,8 +89,6 @@ if(!is_admin()) {
 if(file_exists(get_template_directory_uri().'/library/helpers/wp-imager.php')) {
 	include('library/helpers/wp-imager.php'); // script to resize and cache images and more, download at  https://github.com/Jany-M/WP-Imager/
 }
-//include('library/wordpress/cool_scripts.php'); // wide selection of functions for your theme, some are disabled by default, some you can copy here and customize (but comment them there, then)
-//include('library/wordpress/shortcodes.php');
 
 /* -------------------------------------------------------------------------------- 
 *

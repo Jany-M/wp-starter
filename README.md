@@ -4,7 +4,7 @@
 ## About
 
 A bare WordPress theme with the latest Bootstrap and other WordPress handy functions, ready to use.
-This is meant to be used as a Parent Theme, therefore it needs its companion [WP-Starter Child Theme](#) to work as intended.
+This is meant to be used as a Parent Theme, therefore it needs its companion [WP-Starter Child Theme](https://github.com/Jany-M/WP-Starter-Child-Theme) to work as intended.
 Place both in your WordPress wp-contents/themes folder, and activate the Child Theme.
 
 The scripts have been developed throughout the years, for various projects.
@@ -47,5 +47,9 @@ Ready to use with [WP Imager](https://github.com/Jany-M/WP-Imager) - Download it
 
 ## Credits
 
-Author: Jany Martelli @ [Shambix](http://www.shambix.com)
-Released under the [GPL v3 License](http://choosealicense.com/licenses/gpl-v3/).
+[WP] Starter Child Theme: Jany Martelli @ [Shambix](http://www.shambix.com)
+[Twitter Bootstrap](https://github.com/twbs/bootstrap)
+
+## License
+
+Released under the [GPL v3 License](http://choosealicense.com/licenses/gpl-v3/)
