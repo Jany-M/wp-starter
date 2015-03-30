@@ -45,40 +45,39 @@ add_action('after_setup_theme','wp_starter_theme_setup');
 *
 -------------------------------------------------------------------------------- */
 
-function load_files() {
-	// ------------- JS
-    wp_deregister_script( 'jquery' );
-	// Latest jQuery - IE <9 not supported
-    wp_register_script( 'jquery', '//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js', '', '2.1.3');
-	// This version is older and discontinued, but is more compatible with existing scripts & plugins
-	//wp_register_script( 'jquery', '//code.jquery.com/jquery-1.11.2.min.js', '', '1.11.2');*/
-    wp_enqueue_script( 'jquery' );
-	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', array('jquery'), '3.3.4', true);
-	wp_enqueue_script( 'boostrap_js' );
-	wp_register_script( 'modernizr', get_template_directory_uri() . '/library/js/modernizr.custom.js', '', '2.8.3', true );
-	wp_enqueue_script('modernizr');
-	/*wp_register_script( 'img_loaded', ''.get_template_directory_uri().'/library/js/imagesloaded.pkgd.min.js', array('jquery'), '3.1.8', true);
-	wp_enqueue_script( 'img_loaded' );
-
-	wp_register_script( 'isotope', ''.get_template_directory_uri().'/library/js/isotope.pkgd.min.js', array('jquery'), '2.1.0', true);
-	wp_enqueue_script( 'isotope' );
-
-	wp_register_script( 'infinite_scroll', ''.get_template_directory_uri().'/library/js/jquery.infinitescroll.min.js', array('jquery'), '2.1.0', true);
-	wp_enqueue_script( 'infinite_scroll' );*/
-	// -------------- CSS
-	wp_register_style( 'normalize_css', get_template_directory_uri().'/library/css/normalize.css, '', '1.1.3', 'screen');
-	wp_enqueue_style( 'normalize_css' );
-	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array('normalize_css'), '4.3.0', 'all');
-	wp_enqueue_style( 'fontawesome_css' );
-	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css', array('normalize_css', 'fontawesome_css'), '3.3.4', 'all');
-	wp_enqueue_style( 'bootstrap_css' );
-
-	// Consider using this library for styles, buttons etc: http://metroui.org.ua/
-}
-
-// Don't load this stuff in Admin panel, it will slow down everything and maybe also break it
 if(!is_admin()) {
-	add_action('wp_enqueue_scripts', 'load_files');
+    add_action('wp_enqueue_scripts', 'load_files');
+    function load_files() {
+    	// ------------- JS
+        wp_deregister_script( 'jquery' );
+    	// Latest jQuery - IE <9 not supported
+        wp_register_script( 'jquery', '//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js', '', '2.1.3');
+    	// This version is older and discontinued, but is more compatible with existing scripts & plugins
+    	//wp_register_script( 'jquery', '//code.jquery.com/jquery-1.11.2.min.js', '', '1.11.2');*/
+        wp_enqueue_script( 'jquery' );
+    	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', array('jquery'), '3.3.4', true);
+    	wp_enqueue_script( 'boostrap_js' );
+    	wp_register_script( 'modernizr', get_template_directory_uri() . '/library/js/modernizr.custom.js', '', '2.8.3', true );
+    	wp_enqueue_script('modernizr');
+    	/*wp_register_script( 'img_loaded', ''.get_template_directory_uri().'/library/js/imagesloaded.pkgd.min.js', array('jquery'), '3.1.8', true);
+    	wp_enqueue_script( 'img_loaded' );
+
+    	wp_register_script( 'isotope', ''.get_template_directory_uri().'/library/js/isotope.pkgd.min.js', array('jquery'), '2.1.0', true);
+    	wp_enqueue_script( 'isotope' );
+
+    	wp_register_script( 'infinite_scroll', ''.get_template_directory_uri().'/library/js/jquery.infinitescroll.min.js', array('jquery'), '2.1.0', true);
+    	wp_enqueue_script( 'infinite_scroll' );*/
+    	// -------------- CSS
+    	wp_register_style( 'normalize_css', get_template_directory_uri().'/library/css/normalize.css, '', '1.1.3', 'screen');
+    	wp_enqueue_style( 'normalize_css' );
+    	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array('normalize_css'), '4.3.0', 'all');
+    	wp_enqueue_style( 'fontawesome_css' );
+    	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css', array('normalize_css', 'fontawesome_css'), '3.3.4', 'all');
+    	wp_enqueue_style( 'bootstrap_css' );
+
+    	// Consider using this library for styles, buttons etc: http://metroui.org.ua/
+    }
+    // Don't load this stuff in Admin panel, it will slow down everything and maybe also break it
 }
 
 /* -------------------------------------------------------------------------------- 
