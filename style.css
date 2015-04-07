@@ -20,9 +20,13 @@ img.wp-post-image {
 	max-width: 100%;
 	height: auto;
 }
+img {
+	height: auto;
+}
 
 p iframe, p video {
 	width:100%;
+	max-width: 100%;
 }
 
 /* Images */
