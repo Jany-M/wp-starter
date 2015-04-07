@@ -68,7 +68,7 @@ if(!is_admin()) {
     	wp_register_script( 'infinite_scroll', ''.get_template_directory_uri().'/library/js/jquery.infinitescroll.min.js', array('jquery'), '2.1.0', true);
     	wp_enqueue_script( 'infinite_scroll' );*/
     	// -------------- CSS
-    	wp_register_style( 'normalize_css', get_template_directory_uri().'/library/css/normalize.css, '', '1.1.3', 'screen');
+    	wp_register_style( 'normalize_css', get_template_directory_uri().'/library/css/normalize.css', '', '1.1.3', 'screen');
     	wp_enqueue_style( 'normalize_css' );
     	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array('normalize_css'), '4.3.0', 'all');
     	wp_enqueue_style( 'fontawesome_css' );
