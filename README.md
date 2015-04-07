@@ -1,7 +1,5 @@
 # WP Starter `v 2.5`
 
-==============
-
 A bare WordPress theme with the latest Bootstrap and other WordPress handy functions, ready to use.
 This is meant to be used as a Parent Theme, therefore it needs its companion [WP-Starter Child Theme](https://github.com/Jany-M/WP-Starter-Child-Theme) to work as intended.
 Place both in your WordPress wp-contents/themes folder, and activate the Child Theme.
