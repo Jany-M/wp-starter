@@ -85,7 +85,7 @@ if(!is_admin()) {
 * [WP] Starter - CUSTOM FILES
 *
 -------------------------------------------------------------------------------- */
-if(file_exists(get_template_directory_uri().'/library/helpers/wp-imager.php')) {
+if(file_exists(TEMPLATEPATH .'/library/helpers/wp-imager.php')) {
 	include('library/helpers/wp-imager.php'); // script to resize and cache images and more, download at  https://github.com/Jany-M/WP-Imager/
 }
 
@@ -160,7 +160,7 @@ function add_screen_help( $contextual_help, $screen_id, $screen ) {
 * [WP] Starter - DEV* REQUIRED & RECOMMENDED PLUGINS
 *
 -------------------------------------------------------------------------------- */
-if(file_exists(get_template_directory_uri().'/library/helpers/class-tgm-plugin-activation.php')) {
+if(file_exists(TEMPLATEPATH .'/library/helpers/class-tgm-plugin-activation.php')) {
 
 // TGM Plugin Activation
 // Version: 2.4.0
