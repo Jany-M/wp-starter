@@ -28,7 +28,7 @@ Ready to use with [WP Imager](https://github.com/Jany-M/WP-Imager) - Download it
 ## History
 
 **23/3/2015**
-- `release` version 2.5
+- version 2.5
 - leaner framework
 - updated boostrap
 - updated functions
