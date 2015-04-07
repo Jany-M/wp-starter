@@ -8,16 +8,25 @@ The scripts have been developed throughout the years, for various projects.
 
 Comes with:
 
-- Twitter Bootstrap JS/CSS
-- Font Awesome CSS
-- Custom Modernizr built
-- ImagesLoaded, Isotope & Infinite Scroll scripts (not registered by default during setup) - Check out the [guide](http://www.shambix.com/en/isotope-twitter-bootstrap-infinite-scroll-fluid-responsive-layout/) to use them all at once
-- Theme Support (menus, html, woocommerce, post-thumbnails)
-- Latest jQuery (not using WordPress built-in one)
-- Localization support (create a /languages folder in Child Theme and place po/mo files there, then use $theme_name as domain name)
-- Developer scripts for backend use / debug
-- Integration with TGM plugin activation, for mandatory/recommended plugins (might move it to Child Theme build)
-- A bunch of handy scripts and shortcodes for buttons and styles in content editor (must uncomment the files from functions.php)
+> Twitter Bootstrap JS/CSS
+
+> Font Awesome CSS
+
+> Custom Modernizr built
+
+> ImagesLoaded, Isotope & Infinite Scroll scripts (not registered by default during setup) - Check out the [guide](http://www.shambix.com/en/isotope-twitter-bootstrap-infinite-scroll-fluid-responsive-layout/) to use them all at once
+
+> Theme Support (menus, html, woocommerce, post-thumbnails)
+
+> Latest jQuery (not using WordPress built-in one)
+
+> Localization support (create a /languages folder in Child Theme and place po/mo files there, then use $theme_name as domain name)
+
+> Developer scripts for backend use / debug
+
+> Integration with TGM plugin activation, for mandatory/recommended plugins (might move it to Child Theme build)
+
+> A bunch of handy scripts and shortcodes for buttons and styles in content editor (must uncomment the files from functions.php)
 
 Ready to use with [WP Imager](https://github.com/Jany-M/WP-Imager) - Download it separately and place it inside /library/helpers.
 
