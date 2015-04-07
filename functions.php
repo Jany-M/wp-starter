@@ -160,6 +160,7 @@ function add_screen_help( $contextual_help, $screen_id, $screen ) {
 * [WP] Starter - DEV* REQUIRED & RECOMMENDED PLUGINS
 *
 -------------------------------------------------------------------------------- */
+if(file_exists(get_template_directory_uri().'/library/helpers/class-tgm-plugin-activation.php')) {
 
 // TGM Plugin Activation
 // Version: 2.4.0
@@ -257,6 +258,7 @@ function register_required_plugins() {
     );
 
     tgmpa( $plugins, $config );
-
 }
+
+} // if tgm file exists
 ?>
