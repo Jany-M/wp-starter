@@ -1,6 +1,16 @@
 <?php
 
+global $theme_name;
+
+/* -------------------------------------------------------------------------------- 
+*
+* [WP] Starter - SHORTCODES
+* v 2.5
+*
+-------------------------------------------------------------------------------- */
+
 // Buttons
+// [button type='info' size='large' url='#' target='_blank' text='Buy Me' sub='now or never' modal='x']
 function buttons( $atts, $content = null ) {
 	extract( shortcode_atts( array(
 	'type' => 'default', /* primary, default, info, success, danger, warning, inverse, some custom style */
@@ -69,48 +79,37 @@ function icons( $atts, $content = null ) {
 add_shortcode('icon', 'icons'); 
 
 // Alerts
+// [box color='blu' close='true']
 function alerts( $atts, $content = null ) {
 	extract( shortcode_atts( array(
-	'type' => 'alert-info', /* alert-info, alert-success, alert-error */
-	'close' => 'false', /* display close link */
-	'text' => '', 
+	'color' => 'green', 
+	'close' => 'false' /* display close link */
 	), $atts ) );
+
+	/* info, success, warning, danger */
+	if($color == 'green') $color = 'success';
+	if($color == 'blu') $color = 'info';
+	if($color == 'yellow') $color = 'warning';
+	if($color == 'red') $color = 'danger';
 	
-	$output = '<div class="fade in alert alert-'. $type . '">';
 	if($close == 'true') {
-		$output .= '<a class="close" data-dismiss="alert">×</a>';
+		$dismiss = 'alert-dismissible ';
 	}
-	$output .= $text . '</div>';
+
+	$output = '<div class="'.$dismiss.'alert alert-'.$color.'" role="alert">';
+	if($close == 'true') {
+		$output .= '<button type="button" class="close" data-dismiss="alert" aria-label="'.__('Close', $theme_name).'"><span aria-hidden="true">&times;</span></button>';
+	}
+	$output .= $content . '</div>';
 	
 	return $output;
 }
-
-add_shortcode('alert', 'alerts');
-
-// Block Messages
-function block_messages( $atts, $content = null ) {
-	extract( shortcode_atts( array(
-	'type' => 'alert-info', /* alert-info, alert-success, alert-error */
-	'close' => 'false', /* display close link */
-	'text' => '', 
-	), $atts ) );
-	
-	$output = '<div class="fade in alert alert-block alert-'. $type . '">';
-	if($close == 'true') {
-		$output .= '<a class="close" data-dismiss="alert">×</a>';
-	}
-	$output .= '<p>' . $text . '</p></div>';
-	
-	return $output;
-}
-
-add_shortcode('block-message', 'block_messages'); 
+add_shortcode('box', 'alerts');
 
 // Block Messages
 function blockquotes( $atts, $content = null ) {
 	extract( shortcode_atts( array(
-	'float' => '', /* left, right */
-	'cite' => '', /* text for cite */
+	'float' => '' /* left, right */
 	), $atts ) );
 	
 	$output = '<blockquote';
@@ -123,7 +122,7 @@ function blockquotes( $atts, $content = null ) {
 	$output .= '><p>' . $content . '</p>';
 	
 	if($cite){
-		$output .= '<small>' . $cite . '</small>';
+		$output .= '<small>' . $content . '</small>';
 	}
 	
 	$output .= '</blockquote>';
