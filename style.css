@@ -26,7 +26,7 @@ img.size-large, img.size-full {
 img {
 	height: auto;
 }
-p iframe, p video {
+p iframe, p video, p a img {
 	width:100%;
 	max-width: 100%;
 }
