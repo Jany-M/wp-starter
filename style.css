@@ -30,6 +30,9 @@ p iframe, p video, p a img {
 	width:100%;
 	max-width: 100%;
 }
+img.ajax-loader, img.ajax, .ajax-loader {
+	width:auto;
+}
 .alignleft {
 	float: left;
 	padding-left: 0;
