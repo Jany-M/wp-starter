@@ -26,8 +26,11 @@ img.size-large, img.size-full {
 img {
 	height: auto;
 }
-p iframe, p video, p a img {
+p iframe, p video {
 	width:100%;
+	max-width: 100%;
+}
+p a img {
 	max-width: 100%;
 }
 img.ajax-loader, img.ajax, .ajax-loader {
