@@ -33,12 +33,8 @@ function wp_starter_theme_setup() {
 	add_theme_support('post-thumbnails');
 	add_theme_support( 'menus' );
 	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' )); // allows the use of HTML5 markup for the comment lists, comment forms, search forms and galleries
-	
 	// ADD WOOCOMMERCE 
 	add_theme_support( 'woocommerce' );
-
-	// ADD LANGUAGE FILE - This will check for po/mo files in the Child theme
-	load_theme_textdomain( $theme_name, get_stylesheet_directory_uri() . '/languages' );
 }
 add_action('after_setup_theme','wp_starter_theme_setup');
 
