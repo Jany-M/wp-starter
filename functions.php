@@ -272,4 +272,14 @@ if(file_exists(TEMPLATEPATH .'/library/helpers/class-tgm-plugin-activation.php')
     }
 
 } // if tgm file exists
+
+if(file_exists(TEMPLATEPATH .'/library/helpers/theme-updates/theme-update-checker.php')) {
+    //include('library/helpers/theme-updates/theme-update-checker.php'); // script to automatically update WP Starter from your WordPress backend
+    require 'library/helpers/theme-updates/theme-update-checker.php';
+    $MyThemeUpdateChecker = new ThemeUpdateChecker(
+    'WP-Starter',
+    'http://www.shambix.com/repo/wp-update-server-master/?action=get_metadata&slug=WP-Starter'
+    );
+}
+
 ?>
