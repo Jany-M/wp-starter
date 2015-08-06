@@ -55,7 +55,7 @@ if(!is_admin()) {
     	// This version is older and discontinued, but is more compatible with existing scripts & plugins
     	//wp_register_script( 'jquery', '//code.jquery.com/jquery-1.11.2.min.js', '', '1.11.2');*/
         wp_enqueue_script( 'jquery' );
-    	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', array('jquery'), '3.3.4', true);
+    	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', array('jquery'), '3.3.5', true);
     	wp_enqueue_script( 'boostrap_js' );
     	wp_register_script( 'modernizr', get_template_directory_uri() . '/library/js/modernizr.custom.js', '', '2.8.3', true );
     	wp_enqueue_script('modernizr');
@@ -65,7 +65,7 @@ if(!is_admin()) {
     	wp_enqueue_style( 'normalize_css' );
     	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array('normalize_css'), '4.3.0', 'all');
     	wp_enqueue_style( 'fontawesome_css' );
-    	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css', array('normalize_css', 'fontawesome_css'), '3.3.4', 'all');
+    	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css', array('normalize_css', 'fontawesome_css'), '3.3.5', 'all');
     	wp_enqueue_style( 'bootstrap_css' );
 
     	// Consider using this library for styles, buttons etc: http://metroui.org.ua/
