@@ -273,6 +273,16 @@ function get_page_slug($pageid) {
     return $slug;
 }
 
+// Get Page ID by slug
+function get_id_by_slug($page_slug) {
+	$page = get_page_by_path($page_slug);
+	if ($page) {
+		return $page->ID;
+	} else {
+		return null;
+	}
+} 
+
 /* -------------------------------------------------------------------------------- 
 *
 * [WP] Starter - PAGINATION

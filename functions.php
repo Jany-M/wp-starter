@@ -33,8 +33,9 @@ function wp_starter_theme_setup() {
 	add_theme_support('post-thumbnails');
 	add_theme_support( 'menus' );
 	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' )); // allows the use of HTML5 markup for the comment lists, comment forms, search forms and galleries
-	// ADD WOOCOMMERCE 
-	add_theme_support( 'woocommerce' );
+
+    // ADD WOOCOMMERCE 
+    //add_theme_support( 'woocommerce' ); // using woocommerce with child themes can lead to issues
 }
 add_action('after_setup_theme','wp_starter_theme_setup');
 
