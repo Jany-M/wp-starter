@@ -283,6 +283,12 @@ function get_id_by_slug($page_slug) {
 	}
 } 
 
+// Check if a Plugin is active from Theme
+function plugin_is_active($plugin_folder, $plugin_file) {
+	if(!isset($plugin_file) || $plugin_file == '') $plugin_file = $plugin_folder;
+	return in_array( $plugin_folder. '/' .$plugin_file. '.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) );
+}
+
 /* -------------------------------------------------------------------------------- 
 *
 * [WP] Starter - PAGINATION
