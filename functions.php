@@ -7,11 +7,9 @@
 *
 -------------------------------------------------------------------------------- */
 
-$theme = wp_get_theme();
-$theme_name = $theme->get( 'TextDomain' ); //use this var when necessary, for inline translations eg. _e('Contact us', $theme_name);
-global $theme_name;
-$locale = get_locale(); 
+// THEME
 global $locale;
+$locale = get_locale(); 
 
 // WPML / if installed
 if(array_key_exists('sitepress', $GLOBALS)) {
@@ -28,13 +26,13 @@ if(array_key_exists('sitepress', $GLOBALS)) {
 
 // ADD THEME SUPPORT
 function wp_starter_theme_setup() {
-	global $theme_name;
 	add_theme_support('post-thumbnails');
 	add_theme_support( 'menus' );
+    add_theme_support( 'widgets' );
 	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' )); // allows the use of HTML5 markup for the comment lists, comment forms, search forms and galleries
 
     // ADD WOOCOMMERCE 
-    //add_theme_support( 'woocommerce' ); // using woocommerce with child themes can lead to issues
+    add_theme_support( 'woocommerce' ); // using woocommerce with child themes can lead to issues
 }
 add_action('after_setup_theme','wp_starter_theme_setup');
 
@@ -87,15 +85,6 @@ if(file_exists(TEMPLATEPATH .'/library/helpers/wp-imager.php')) {
 * [WP] Starter - DEV* HELPERS
 *
 -------------------------------------------------------------------------------- */
-
-// ERROR HANDLING - DEBUG for Admins
-if(current_user_can('activate_plugins')) :
-	//error_reporting(E_ALL); // everything
-	//error_reporting(E_ALL & ~E_NOTICE);// Report all errors except E_NOTICE
-	error_reporting(E_ERROR | E_WARNING | E_PARSE); // Report simple running errors
-	else :
-	error_reporting(0);
-endif;
 
 // DISPLAY SCREEN + REGISTERED POST TYPES for Admins
 if(current_user_can('activate_plugins')) :
