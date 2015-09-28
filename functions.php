@@ -3,7 +3,7 @@
 *
 * [WP] Starter - SETUP
 * [WP] Starter is a custom framework developed by Shambix @ http://www.shambix.com
-* Version 2.6
+* Version 2.6.2
 *
 -------------------------------------------------------------------------------- */
 
