@@ -626,29 +626,21 @@ function wp_starter_login_footer() {
 }
 add_action('login_footer', 'wp_starter_login_footer');
 
-// Custom Login form CSS
-/*function wp_starter_login_css() {
-	echo '<link rel="stylesheet" href="' . get_stylesheet_directory_uri() . '/library/css/login.css">';
-}
-add_action('login_head', 'wp_starter_login_css');*/
-
 // Custom Login form Image
-//global $login_img_url, $login_img_w, $login_img_h;
+global $def_login_img_url, $def_login_img_w, $def_login_img_h;
+$def_login_img_url = get_template_directory_uri().'/library/helpers/shambix.png';
+$def_login_img_w = '100px';
+$def_login_img_h = '100px';
 
 if (!function_exists('wp_starter_login_logo') || !function_exists('custom_login_logo')) {
-	function wp_starter_login_logo() {
-		$login_img_url = get_stylesheet_directory_uri().'/library/helpers/shambix.png';
-		$login_img_w = '100px';
-		$login_img_h = '100px';
-		//echo 'from else = '.$login_img_url.$login_img_w.$login_img_h;
-		?>
+	function wp_starter_login_logo() { ?>
 		<style type="text/css">
 			body.login div#login h1 a {
-				background-image: url(<?php echo $login_img_url; ?>);
+				background-image: url(<?php echo $def_login_img_url; ?>);
 				background-size: auto auto;
-				padding-bottom: 30px;
-				width: <?php echo $login_img_w; ?>;
-				height: <?php echo $login_img_h; ?>;
+				padding-bottom: 0px;
+				width: <?php echo $def_login_img_w; ?>;
+				height: <?php echo $def_login_img_h; ?>;
 			}
 		</style>
 	<?php }

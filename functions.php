@@ -71,6 +71,12 @@ if(!is_admin()) {
     // Don't load this stuff in Admin panel, it will slow down everything and maybe also break it
 }
 
+// Custom Login form CSS
+/*function wp_starter_login_css() {
+    echo '<link rel="stylesheet" href="' . get_stylesheet_directory_uri() . '/library/css/login.css">';
+}
+add_action('login_head', 'wp_starter_login_css');*/
+
 /* -------------------------------------------------------------------------------- 
 *
 * [WP] Starter - CUSTOM FILES
