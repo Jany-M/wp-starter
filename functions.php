@@ -200,11 +200,11 @@ if(file_exists(TEMPLATEPATH .'/library/helpers/class-tgm-plugin-activation.php')
             ),*/
 
             // This is an example of how to include a plugin from the WordPress Plugin Repository.
-            array(
+            /*array(
                 'name'      => 'All in One SEO Pack',
                 'slug'      => 'all-in-one-seo-pack',
                 'required'  => false,
-            ),
+            ),*/
     		array(
                 'name'      => 'Jetpack by WordPress.com',
                 'slug'      => 'jetpack',
@@ -272,8 +272,8 @@ if(file_exists(TEMPLATEPATH .'/library/helpers/theme-updates/theme-update-checke
     //include('library/helpers/theme-updates/theme-update-checker.php'); // script to automatically update WP Starter from your WordPress backend
     require 'library/helpers/theme-updates/theme-update-checker.php';
     $MyThemeUpdateChecker = new ThemeUpdateChecker(
-    'WP-Starter',
-    'http://www.shambix.com/repo/wp-update-server-master/?action=get_metadata&slug=WP-Starter'
+    'wp-starter',
+    'http://www.shambix.com/repo/wp-update-server-master/?action=get_metadata&slug=wp-starter'
     );
 }
 

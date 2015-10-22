@@ -63,3 +63,8 @@ img.alignright {
     padding: 8% 0 0;
     width: 320px;
 }
+
+/* Admin editor */
+#tinymce img.size-large, #tinymce img.size-full {
+	width: auto;
+}
