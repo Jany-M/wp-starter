@@ -3,9 +3,12 @@
 *
 * [WP] Starter - SETUP
 * [WP] Starter is a custom framework developed by Shambix @ http://www.shambix.com
-* Version 2.6.2
+* Version 2.6.3
 *
 -------------------------------------------------------------------------------- */
+
+// get_stylesheet_directory_uri(); // Child Theme
+// get_template_directory_uri(); // Parent Theme
 
 // THEME
 global $locale;
@@ -82,8 +85,10 @@ add_action('login_head', 'wp_starter_login_css');*/
 * [WP] Starter - CUSTOM FILES
 *
 -------------------------------------------------------------------------------- */
-if(file_exists(TEMPLATEPATH .'/library/helpers/wp-imager.php')) {
-	include('library/helpers/wp-imager.php'); // script to resize and cache images and more, download at  https://github.com/Jany-M/WP-Imager/
+
+// script to resize and cache images and more, download at  https://github.com/Jany-M/WP-Imager/ 
+if(is_file(get_theme_root().'/wp-starter/library/helpers/wp-imager.php')) {
+    include_once 'library/helpers/wp-imager.php';
 }
 
 /* -------------------------------------------------------------------------------- 
