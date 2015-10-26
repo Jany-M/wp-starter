@@ -19,13 +19,13 @@ if (!is_admin()){
 	add_action('wp_print_scripts', 'comments_queue_js');
 }
 
-// Rimuovi Feed Commenti
+// Remove Comment Feed
 function remove_comments_rss( $for_comments ) {
 	return;
 }
 add_filter('post_comments_feed_link','remove_comments_rss');
 
-// Rimuovi Barra Admin Top
+// Remove Top Admin Bar in Frontend
 function remove_wp_adminbar() {
 	if( has_filter('show_admin_bar') ) {
 		add_filter( 'show_admin_bar', '__return_false' );
@@ -596,6 +596,29 @@ function custom_woocommerce_auto_complete_order( $order_id ) {
 
 /* -------------------------------------------------------------------------------- 
 *
+* [WP] Starter - FONT AWESOME
+*
+-------------------------------------------------------------------------------- */
+
+// Extract all icon classes from file and puts them into an array
+function fontAwesome($path){
+    $css = file_get_contents($path);
+    $pattern = '/\.(fa-(?:\w+(?:-)?)+):before\s+{\s*content:\s*"(.+)";\s+}/';
+    preg_match_all($pattern, $css, $matches, PREG_SET_ORDER);
+    $icons = array();
+    foreach ($matches as $match) {
+    	// Chose what kind of array you prefer
+        //$icons[$match[1]] = $match[2]; //["fa-glass"]=> "\f000"
+        $icons[] = str_replace ('fa-', '', $match[1]); // [0] => "fa-glass"
+    }
+    sort($icons);
+    return $icons;
+}
+// Usage
+//$icons = fontAwesome(get_stylesheet_directory_uri().'/css/font-awesome.css');
+
+/* -------------------------------------------------------------------------------- 
+*
 * [WP] Starter - CREDITS & LOGIN
 *
 -------------------------------------------------------------------------------- */
@@ -660,7 +683,7 @@ add_filter('login_headertitle', 'wp_starter_login_title');
 
 /* -------------------------------------------------------------------------------- 
 *
-* [WP] Starter - SOCIALMEDIA SCRIPTS
+* [WP] Starter - SOCIAL MEDIA SCRIPTS
 *
 -------------------------------------------------------------------------------- */
 
