@@ -24,7 +24,7 @@ if(array_key_exists('sitepress', $GLOBALS)) {
         global $lang;
 	}
 } else {
-	//$lang = 'en'; //set your default lang
+	//$lang = $locale; //set your default lang
 }
 
 // ADD THEME SUPPORT
