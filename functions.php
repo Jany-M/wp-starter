@@ -82,17 +82,6 @@ add_action('login_head', 'wp_starter_login_css');*/
 
 /* -------------------------------------------------------------------------------- 
 *
-* [WP] Starter - CUSTOM FILES
-*
--------------------------------------------------------------------------------- */
-
-// script to resize and cache images and more, download at  https://github.com/Jany-M/WP-Imager/ 
-if(is_file(get_theme_root().'/wp-starter/library/helpers/wp-imager.php')) {
-    include_once 'library/helpers/wp-imager.php';
-}
-
-/* -------------------------------------------------------------------------------- 
-*
 * [WP] Starter - DEV* HELPERS
 *
 -------------------------------------------------------------------------------- */
