@@ -354,17 +354,6 @@ add_filter( 'pre_get_posts', 'sh_search_filter' );*/
 -------------------------------------------------------------------------------- */
 
 // Custom Lang Selector
-<<<<<<< HEAD
-function languages_list_header(){
-    $languages = icl_get_languages('skip_missing=0&orderby=code');
-    if(!empty($languages)){
-        foreach($languages as $l) {
-			if(!$l['active']) echo '<a class="btnLang" href="'.$l['url'].'">';
-			if(!$l['active']) echo  '<img src="'.$l['country_flag_url'].'" height="12" alt="'.$l['language_code'].'" width="18" />';
-			if(!$l['active']) echo '</a>';
-        }
-    }
-=======
 if (!function_exists('languages_list_header')) {
 	function languages_list_header(){
 	    $languages = icl_get_languages('skip_missing=0&orderby=code');
@@ -376,7 +365,6 @@ if (!function_exists('languages_list_header')) {
 	        }
 	    }
 	}
->>>>>>> origin/master
 }
 
 /* -------------------------------------------------------------------------------- 
