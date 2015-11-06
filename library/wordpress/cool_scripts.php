@@ -354,7 +354,7 @@ add_filter( 'pre_get_posts', 'sh_search_filter' );*/
 -------------------------------------------------------------------------------- */
 
 // Custom Lang Selector
-/*function languages_list_header(){
+function languages_list_header(){
     $languages = icl_get_languages('skip_missing=0&orderby=code');
     if(!empty($languages)){
         foreach($languages as $l) {
@@ -363,7 +363,7 @@ add_filter( 'pre_get_posts', 'sh_search_filter' );*/
 			if(!$l['active']) echo '</a>';
         }
     }
-}*/
+}
 
 /* -------------------------------------------------------------------------------- 
 *
@@ -650,13 +650,12 @@ function wp_starter_login_footer() {
 add_action('login_footer', 'wp_starter_login_footer');
 
 // Custom Login form Image
-global $def_login_img_url, $def_login_img_w, $def_login_img_h;
-$def_login_img_url = get_template_directory_uri().'/library/helpers/shambix.png';
-$def_login_img_w = '100px';
-$def_login_img_h = '100px';
-
 if (!function_exists('wp_starter_login_logo') || !function_exists('custom_login_logo')) {
-	function wp_starter_login_logo() { ?>
+	function wp_starter_login_logo() {
+		$def_login_img_url = get_template_directory_uri().'/library/helpers/shambix.png';
+		$def_login_img_w = '100px';
+		$def_login_img_h = '100px';
+		?>
 		<style type="text/css">
 			body.login div#login h1 a {
 				background-image: url(<?php echo $def_login_img_url; ?>);
