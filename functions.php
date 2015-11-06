@@ -24,7 +24,7 @@ if(array_key_exists('sitepress', $GLOBALS)) {
         global $lang;
 	}
 } else {
-	//$lang = 'en'; //set your default lang
+	//$lang = $locale; //set your default lang
 }
 
 // ADD THEME SUPPORT
@@ -79,17 +79,6 @@ if(!is_admin()) {
     echo '<link rel="stylesheet" href="' . get_stylesheet_directory_uri() . '/library/css/login.css">';
 }
 add_action('login_head', 'wp_starter_login_css');*/
-
-/* -------------------------------------------------------------------------------- 
-*
-* [WP] Starter - CUSTOM FILES
-*
--------------------------------------------------------------------------------- */
-
-// script to resize and cache images and more, download at  https://github.com/Jany-M/WP-Imager/ 
-if(is_file(get_theme_root().'/wp-starter/library/helpers/wp-imager.php')) {
-    include_once 'library/helpers/wp-imager.php';
-}
 
 /* -------------------------------------------------------------------------------- 
 *
