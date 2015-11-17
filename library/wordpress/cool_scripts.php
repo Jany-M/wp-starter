@@ -191,6 +191,17 @@ if (!function_exists('custom_excerpt')) {
 	}
 }
 
+// Shorten any text
+function shorten($string, $lenght) {
+	if (strlen($string) >= $lenght) {
+	    //echo substr($string, 0, 10). " ... " . substr($string, -5); // this is in case you wanted to shorten, add ... and then the last 5 letters of the sentence eg. "This is a ...script"
+	    echo substr($string, 0, $lenght)."&hellip;";
+	}
+	else {
+	    echo $string;
+	}
+}
+
 
 /* -------------------------------------------------------------------------------- 
 *
