@@ -83,14 +83,15 @@ add_shortcode('icon', 'icons');
 function alerts( $atts, $content = null ) {
 	extract( shortcode_atts( array(
 	'color' => 'green', 
-	'close' => 'false' /* display close link */
+	'close' => 'false', /* display close link */
+	'type' => 'success'
 	), $atts ) );
 
 	/* info, success, warning, danger */
-	if($color == 'green') $color = 'success';
-	if($color == 'blu') $color = 'info';
-	if($color == 'yellow') $color = 'warning';
-	if($color == 'red') $color = 'danger';
+	if($color == 'green' || $type == 'success') $color = 'success';
+	if($color == 'blu' || $type == 'info') $color = 'info';
+	if($color == 'yellow' || $type == 'warning') $color = 'warning';
+	if($color == 'red' || $type == 'danger') $color = 'danger';
 	
 	if($close == 'true') {
 		$dismiss = 'alert-dismissible ';
@@ -105,6 +106,7 @@ function alerts( $atts, $content = null ) {
 	return $output;
 }
 add_shortcode('box', 'alerts');
+add_shortcode('alert', 'alerts');
 
 // Block Messages
 function blockquotes( $atts, $content = null ) {

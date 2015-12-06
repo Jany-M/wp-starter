@@ -22,7 +22,8 @@ img.wp-post-image {
 	height: auto;
 }
 img.size-large, img.size-full {
-	width:100%;
+	max-width:100%;
+	margin: 0 auto;
 }
 img {
 	height: auto;
