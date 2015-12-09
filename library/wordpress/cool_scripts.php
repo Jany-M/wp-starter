@@ -122,7 +122,7 @@ add_filter('useronline_display_user', 'wpu_user_avatars', 10, 2);*/
 	return $has_valid_avatar;
 }*/
 
-// -- Get authors role
+// Get authors role
 function get_author_role() {
     global $authordata;
     $author_roles = $authordata->roles;
