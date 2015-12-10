@@ -331,6 +331,28 @@ if (!function_exists('custom_pagination')) {
 	}
 }
 
+// Custom Loop Pagination
+if (!function_exists('custom_loop_pagination')) {
+	function custom_loop_pagination($prev = 'Previous', $next = 'Next') {
+		$big = 99999999;
+		$pagination = paginate_links(array(
+		'base' => str_replace($big, '%#%', get_pagenum_link($big)),
+		'format' => '?page=%#%',
+		'total' => $wp_query->max_num_pages,
+		'current' => max(1, get_query_var('paged')),
+		'show_all' => false,
+		'end_size' => 2,
+		'mid_size' => 3,
+		'prev_next' => true,
+		'prev_text' => __($prev, $theme_name),
+		'next_text' => __($next, $theme_name),
+		'type' => 'list'
+		));
+		$pagination = str_replace('page-numbers', 'pagination', $pagination);
+		echo $pagination;
+	}
+}
+
 /* -------------------------------------------------------------------------------- 
 *
 * [WP] Starter - FORMATTING
