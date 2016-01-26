@@ -3,7 +3,7 @@
 *
 * [WP] Starter - SETUP
 * [WP] Starter is a custom framework developed by Shambix @ http://www.shambix.com
-* Version 2.6.3
+* Version 2.6.5
 *
 -------------------------------------------------------------------------------- */
 
@@ -90,11 +90,16 @@ add_action('login_head', 'wp_starter_login_css');*/
 if(current_user_can('activate_plugins')) :
     add_action('contextual_help', 'add_screen_help', 10, 3);
 endif;
+
 function add_screen_help( $contextual_help, $screen_id, $screen ) {
-    // The add_help_tab function for screen was introduced in WordPress 3.3.
     if ( ! method_exists( $screen, 'add_help_tab' ) )
         return $contextual_help;
     global $hook_suffix;
+
+    $infotitle = '<div>
+        <h1 style="width:30%;float:left;">[WP] Starter System Info</h1>
+        <p style="width:70%;float:right; text-align:right;">Theme documentation on <a href="https://github.com/Jany-M/WP-Starter" target="_blank">GitHub</a> - developed by <a href="http://www.sgambix.com" target="_blank">Shambix</a></p>;
+    </div><hr>';
     // List screen properties
     $variables = '<ul style="width:50%;float:left;"><h3 style="cleare:both; width:100%">Screen variables</h3>'
         . sprintf( '<li> Screen id : %s</li>', $screen_id )
@@ -126,13 +131,48 @@ function add_screen_help( $contextual_help, $screen_id, $screen ) {
     }
     $regposts .= '</ul>';
     // Combine $variables list with $hooks list.
-    $help_content = $variables . $hooks . $regposts;
-    // Add help panel
+    $help_content = $infotitle . $variables . $hooks . $regposts;
+    
+    // Add [WP] Starter Debug tab
     $screen->add_help_tab( array(
-        'id'      => 'wptuts-screen-help',
-        'title'   => '[WP]Starter Debug',
+        'id'      => 'wpstarter-debug',
+        'title'   => '[WP] General',
         'content' => $help_content,
     ));
+
+    // Info about Admin Backend Menu
+    global $menu;
+    $menu_info = array();
+    $menu_info = $menu;
+
+    $menu_before = '<h3 style="cleare:both; width:100%">Admin Menu Items</h3>';
+    $menu_content= '<pre>'.var_export($menu, true).'</pre>';
+    $menu_after = '</li></ul>';
+
+    $menu_info_output = $menu_before . $menu_content .$menu_after;
+
+    // Add [WP] Starter Admin Menu Info
+    $screen->add_help_tab( array(
+        'id'      => 'wpstarter-adminmenu',
+        'title'   => '[WP] Admin Menu',
+        'content' => $menu_info_output,
+    ));
+
+    // Quick Reference Links
+    $links = '<ul style="width:50%;float:left;"><h3 style="cleare:both; width:100%">Quick Reference Links</h3>
+        <li><a href="https://codex.wordpress.org/Global_Variables" target="_blank">WordPress Globals</a></li>
+        <li><a href="https://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">WP Query</a></li>
+    </ul>';
+
+    // [WP]Starter Quick links
+    $screen->add_help_tab( array(
+        'id'      => 'wpstarter-reflinks',
+        'title'   => '[WP] Quick Links',
+        'content' => $links,
+    ));
+
+
+
     return $contextual_help;
 }
 
