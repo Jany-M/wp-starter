@@ -52,7 +52,8 @@ if(!is_admin()) {
     	// ------------- JS
         wp_deregister_script( 'jquery' );
     	// Latest jQuery - IE <9 not supported
-        wp_register_script( 'jquery', '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js', '', '2.1.4');
+        wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js", false, null);
+		
     	// This version is older and discontinued, but is more compatible with existing scripts & plugins
     	//wp_register_script( 'jquery', '//code.jquery.com/jquery-1.11.2.min.js', '', '1.11.2');*/
         wp_enqueue_script( 'jquery' );

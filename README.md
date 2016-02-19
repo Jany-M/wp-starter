@@ -1,10 +1,11 @@
 # WP Starter `v 2.6.5`
 
-A bare WordPress theme with the latest Bootstrap and other WordPress handy functions, ready to use.
-This is meant to be used as a Parent Theme, therefore it needs its companion [WP-Starter Child Theme](https://github.com/Jany-M/WP-Starter-Child-Theme) to work as intended.
+A simple & lean WordPress Framework theme, with the latest Bootstrap and other WordPress handy functions.
+This is meant to be used as a Parent Theme, therefore it needs a companion, like [WP-Starter Child Theme](https://github.com/Jany-M/WP-Starter-Child-Theme) to work as intended.
 Place both in your WordPress wp-contents/themes folder, and activate the Child Theme.
 
-The scripts have been developed throughout the years, for various projects.
+The Framework has been developed throughout the years, for various projects and it constantly gets updated.
+All updates go directly to your site, you don't have to check back here, you'll see an updated icon (like for other Themes).
 
 Comes with:
 
