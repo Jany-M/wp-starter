@@ -1,4 +1,4 @@
-# WP Starter `v 2.6.5`
+# WP Starter `v 2.6.7`
 
 A simple & lean WordPress Framework theme, with the latest Bootstrap and other WordPress handy functions.
 This is meant to be used as a Parent Theme, therefore it needs a companion, like [WP-Starter Child Theme](https://github.com/Jany-M/WP-Starter-Child-Theme) to work as intended.
@@ -33,6 +33,13 @@ Ready to use with [WP Imager](https://github.com/Jany-M/WP-Imager) - Download it
 
 
 ## History
+
+**1/3/2016**
+- version 2.6.7
+- changed `function shorten` and `function custom_excerpt` to return, instead of echo
+- added  `function custom_query_pagination`
+- added wp starter version constant
+- minor edits
 
 **23/3/2015**
 - version 2.5

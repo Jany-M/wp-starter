@@ -3,16 +3,19 @@
 *
 * [WP] Starter - SETUP
 * [WP] Starter is a custom framework developed by Shambix @ http://www.shambix.com
-* Version 2.6.5
 *
 -------------------------------------------------------------------------------- */
+
+define('WP_STARTER_VERS', '2.7');
+if(!defined('WP_STARTER_LIB'))
+    define('WP_STARTER_LIB', TEMPLATEPATH.'/libs/');
 
 // get_stylesheet_directory_uri(); // Child Theme
 // get_template_directory_uri(); // Parent Theme
 
 // THEME
 global $locale;
-$locale = get_locale(); 
+$locale = get_locale();
 
 // WPML / if installed
 if(array_key_exists('sitepress', $GLOBALS)) {
@@ -45,34 +48,31 @@ add_action('after_setup_theme','wp_starter_theme_setup');
 *
 -------------------------------------------------------------------------------- */
 
-if(!is_admin()) {
-    add_action('wp_enqueue_scripts', 'load_files');
-    function load_files() {
-        
+function load_files() {
+    
     	// ------------- JS
         wp_deregister_script( 'jquery' );
     	// Latest jQuery - IE <9 not supported
-        wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js", false, null);
+        wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js", array(), '2.1.4');
 		
     	// This version is older and discontinued, but is more compatible with existing scripts & plugins
     	//wp_register_script( 'jquery', '//code.jquery.com/jquery-1.11.2.min.js', '', '1.11.2');*/
         wp_enqueue_script( 'jquery' );
-    	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', array('jquery'), '3.3.5', true);
+    	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', array('jquery'), '3.3.6', true);
     	wp_enqueue_script( 'boostrap_js' );
     	wp_register_script( 'modernizr', get_template_directory_uri() . '/library/js/modernizr.custom.js', '', '2.8.3', true );
     	wp_enqueue_script('modernizr');
     	
     	// -------------- CSS
-    	wp_register_style( 'normalize_css', get_template_directory_uri().'/library/css/normalize.css', '', '1.1.3', 'screen');
-    	wp_enqueue_style( 'normalize_css' );
-    	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array('normalize_css'), '4.3.0', 'all');
+    	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', array(), '4.3.0', 'all');
     	wp_enqueue_style( 'fontawesome_css' );
-    	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css', array('normalize_css', 'fontawesome_css'), '3.3.5', 'all');
+    	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', array(), '3.3.6', 'all');
     	wp_enqueue_style( 'bootstrap_css' );
+}
 
-    	// Consider using this library for styles, buttons etc: http://metroui.org.ua/
-    }
-    // Don't load this stuff in Admin panel, it will slow down everything and maybe also break it
+// Don't load this stuff in Admin panel, it will slow down everything and maybe also break it
+if(!is_admin()) {
+    add_action('wp_enqueue_scripts', 'load_files');
 }
 
 // Custom Login form CSS
@@ -201,11 +201,12 @@ function remove_wp_tabs () {
 * [WP] Starter - DEV* REQUIRED & RECOMMENDED PLUGINS
 *
 -------------------------------------------------------------------------------- */
-if(file_exists(TEMPLATEPATH .'/library/helpers/class-tgm-plugin-activation.php')) {
+$tmg_file = WP_STARTER_LIB.'helpers/class-tgm-plugin-activation.php';
+if(file_exists($tmg_file)) {
 
     // TGM Plugin Activation
     // Version: 2.4.0
-    require_once dirname( __FILE__ ) . '/library/helpers/class-tgm-plugin-activation.php';
+    require_once WP_STARTER_LIB.'helpers/class-tgm-plugin-activation.php';
 
     // Uncomment this Action to activate the whole thing
     //add_action( 'tgmpa_register', 'register_required_plugins' );
@@ -303,9 +304,10 @@ if(file_exists(TEMPLATEPATH .'/library/helpers/class-tgm-plugin-activation.php')
 
 } // if tgm file exists
 
-if(file_exists(TEMPLATEPATH .'/library/helpers/theme-updates/theme-update-checker.php')) {
+$updater = WP_STARTER_LIB.'helpers/theme-updates/theme-update-checker.php';
+if(file_exists($updater)) {
     //include('library/helpers/theme-updates/theme-update-checker.php'); // script to automatically update WP Starter from your WordPress backend
-    require 'library/helpers/theme-updates/theme-update-checker.php';
+    require WP_STARTER_LIB.'helpers/theme-updates/theme-update-checker.php';
     $MyThemeUpdateChecker = new ThemeUpdateChecker(
     'wp-starter',
     'http://www.shambix.com/repo/wp-update-server-master/?action=get_metadata&slug=wp-starter'
