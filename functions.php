@@ -8,7 +8,7 @@
 
 define('WP_STARTER_VERS', '2.7.1');
 if(!defined('WP_STARTER_LIB'))
-    define('WP_STARTER_LIB', TEMPLATEPATH.'/libs/');
+    define('WP_STARTER_LIB', TEMPLATEPATH.'/lib/');
 
 // get_stylesheet_directory_uri(); // Child Theme
 // get_template_directory_uri(); // Parent Theme
@@ -64,11 +64,10 @@ function load_files() {
         wp_enqueue_script( 'jquery' );
     	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', array('jquery'), '3.3.6', true);
     	wp_enqueue_script( 'boostrap_js' );
-    	wp_register_script( 'modernizr', get_template_directory_uri() . '/library/js/modernizr.custom.js', '', '2.8.3', true );
-    	wp_enqueue_script('modernizr');
+
 
     	// -------------- CSS
-    	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', array(), '4.3.0', 'all');
+    	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', array(), '4.5.0', 'all');
     	wp_enqueue_style( 'fontawesome_css' );
     	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', array(), '3.3.6', 'all');
     	wp_enqueue_style( 'bootstrap_css' );
@@ -91,107 +90,7 @@ add_action('login_head', 'wp_starter_login_css');*/
 *
 -------------------------------------------------------------------------------- */
 
-// DISPLAY SCREEN + REGISTERED POST TYPES for Admins
-if(current_user_can('activate_plugins')) :
-    add_action('contextual_help', 'add_screen_help', 10, 3);
-endif;
-
-function add_screen_help( $contextual_help, $screen_id, $screen ) {
-    if ( ! method_exists( $screen, 'add_help_tab' ) )
-        return $contextual_help;
-    global $hook_suffix;
-
-    $infotitle = '<div>
-        <h1 style="width:30%;float:left;">[WP] Starter System Info</h1>
-        <p style="width:70%;float:right; text-align:right;">Theme documentation on <a href="https://github.com/Jany-M/WP-Starter" target="_blank">GitHub</a> - developed by <a href="http://www.sgambix.com" target="_blank">Shambix</a></p>;
-    </div><hr>';
-    // List screen properties
-    $variables = '<ul style="width:50%;float:left;"><h3 style="cleare:both; width:100%">Screen variables</h3>'
-        . sprintf( '<li> Screen id : %s</li>', $screen_id )
-        . sprintf( '<li> Screen base : %s</li>', $screen->base )
-        . sprintf( '<li>Parent base : %s</li>', $screen->parent_base )
-        . sprintf( '<li> Parent file : %s</li>', $screen->parent_file )
-        . sprintf( '<li> Hook suffix : %s</li>', $hook_suffix )
-        . '</ul>';
-    // Append global $hook_suffix to the hook stems
-    $hooks = array(
-        "load-$hook_suffix",
-        "admin_print_styles-$hook_suffix",
-        "admin_print_scripts-$hook_suffix",
-        "admin_head-$hook_suffix",
-        "admin_footer-$hook_suffix"
-    );
-    // If add_meta_boxes or add_meta_boxes_{screen_id} is used, list these too
-    if ( did_action( 'add_meta_boxes_' . $screen_id ) )
-        $hooks[] = 'add_meta_boxes_' . $screen_id;
-    if ( did_action( 'add_meta_boxes' ) )
-        $hooks[] = 'add_meta_boxes';
-    // Get List HTML for the hooks
-    $hooks = '<ul style="width:50%;float:left;"><h3 style="cleare:both; width:100%">Hooks</h3><li>' . implode( '</li><li>', $hooks ) . '</li></ul>';
-    // Get Registered Post Types
-    $post_types = get_post_types( '', 'names' );
-    $regposts = '<h3 style="cleare:both; width:100%">Registered Post Types</h3><ul style="width:100%; display:block;">';
-    foreach ( $post_types as $post_type ) {
-       $regposts .= '<li style="float:left;">'.$post_type.'</li>';
-    }
-    $regposts .= '</ul>';
-    // Combine $variables list with $hooks list.
-    $help_content = $infotitle . $variables . $hooks . $regposts;
-
-    // Add [WP] Starter Debug tab
-    $screen->add_help_tab( array(
-        'id'      => 'wpstarter-debug',
-        'title'   => '[WP] General',
-        'content' => $help_content,
-    ));
-
-    // Info about Admin Backend Menu
-    global $menu;
-    $menu_info = array();
-    $menu_info = $menu;
-
-    $menu_before = '<h3 style="cleare:both; width:100%">Admin Menu Items</h3>';
-    $menu_content= '<pre>'.var_export($menu, true).'</pre>';
-    $menu_after = '</li></ul>';
-
-    $menu_info_output = $menu_before . $menu_content .$menu_after;
-
-    // Add [WP] Starter Admin Menu Info
-    $screen->add_help_tab( array(
-        'id'      => 'wpstarter-adminmenu',
-        'title'   => '[WP] Admin Menu',
-        'content' => $menu_info_output,
-    ));
-
-    // Quick Reference Links
-    $links = '<ul style="width:50%;float:left;"><h3 style="cleare:both; width:100%">Quick Reference Links</h3>
-        <li><a href="https://codex.wordpress.org/Global_Variables" target="_blank">WordPress Globals</a></li>
-        <li><a href="http://wpengineer.com/2382/wordpress-constants-overview/" target="_blank">WordPress Constants</li>
-        <li><a href="https://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">WP Query</a></li>
-    </ul>';
-
-    // [WP]Starter Quick links
-    $screen->add_help_tab( array(
-        'id'      => 'wpstarter-reflinks',
-        'title'   => '[WP] Quick Links',
-        'content' => $links,
-    ));
-
-
-
-    return $contextual_help;
-}
-
-// ADD Custom Tab to HELP
-/*add_action( "load-{$GLOBALS['pagenow']}", 'add_debug_tab', 20 );
-function add_debug_tab () {
-    $screen = get_current_screen();
-    $screen->add_help_tab( array(
-        'id'    => 'wpstarter_debug_tab',
-        'title' => __('DEBUG'),
-        'content'   => '<p>' . __( '[WP] Starter - Debug Information.' ) . '</p>',
-    ));
-}*/
+require_once(WP_STARTER_LIB.'wordpress/contextual_help.php');
 
 // REMOVE WP DEFAULT HELP TABS
 //$screen->remove_help_tab( $id )
@@ -206,117 +105,7 @@ function remove_wp_tabs () {
 * [WP] Starter - DEV* REQUIRED & RECOMMENDED PLUGINS
 *
 -------------------------------------------------------------------------------- */
-$tmg_file = WP_STARTER_LIB.'helpers/class-tgm-plugin-activation.php';
-if(file_exists($tmg_file)) {
 
-    // TGM Plugin Activation
-    // Version: 2.4.0
-    require_once WP_STARTER_LIB.'helpers/class-tgm-plugin-activation.php';
-
-    // Uncomment this Action to activate the whole thing
-    //add_action( 'tgmpa_register', 'register_required_plugins' );
-
-    function register_required_plugins() {
-    	$plugins = array(
-
-    		// This is an example of how to include a plugin pre-packaged with a theme.
-            /*array(
-                'name'               => 'TGM Example Plugin', // The plugin name.
-                'slug'               => 'tgm-example-plugin', // The plugin slug (typically the folder name).
-                'source'             => get_stylesheet_directory() . '/lib/plugins/tgm-example-plugin.zip', // The plugin source.
-                'required'           => true, // If false, the plugin is only 'recommended' instead of required.
-                'version'            => '', // E.g. 1.0.0. If set, the active plugin must be this version or higher.
-                'force_activation'   => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch.
-                'force_deactivation' => false, // If true, plugin is deactivated upon theme switch, useful for theme-specific plugins.
-                'external_url'       => '', // If set, overrides default API URL and points to an external URL.
-            ),*/
-
-            // This is an example of how to include a plugin from a private repo in your theme.
-            /*array(
-                'name'               => 'TGM New Media Plugin', // The plugin name.
-                'slug'               => 'tgm-new-media-plugin', // The plugin slug (typically the folder name).
-                'source'             => 'https://s3.amazonaws.com/tgm/tgm-new-media-plugin.zip', // The plugin source.
-                'required'           => true, // If false, the plugin is only 'recommended' instead of required.
-                'external_url'       => 'https://github.com/thomasgriffin/New-Media-Image-Uploader', // If set, overrides default API URL and points to an external URL.
-            ),*/
-
-            // This is an example of how to include a plugin from the WordPress Plugin Repository.
-            /*array(
-                'name'      => 'All in One SEO Pack',
-                'slug'      => 'all-in-one-seo-pack',
-                'required'  => false,
-            ),*/
-    		array(
-                'name'      => 'Jetpack by WordPress.com',
-                'slug'      => 'jetpack',
-                'required'  => false,
-            ),
-    		array(
-                'name'      => 'WP-DBManager',
-                'slug'      => 'wp-dbmanager',
-                'required'  => false,
-            ),
-    		array(
-                'name'      => 'Types - Complete Solution for Custom Fields and Types',
-                'slug'      => 'types',
-                'required'  => false,
-            ),
-    		/*array(
-                'name'      => 'WP Smush.it',
-                'slug'      => 'wp-smushit',
-                'required'  => false,
-            ),*/
-    		array(
-                'name'      => 'Contact Form 7',
-                'slug'      => 'wpcf7',
-                'required'  => false,
-            ),
-
-        );
-
-        $config = array(
-            'default_path' => 'plugins',               // Default absolute path to pre-packaged plugins.
-            'menu'         => 'tgmpa-install-plugins', // Menu slug.
-            'has_notices'  => true,                    // Show admin notices or not.
-            'dismissable'  => true,                    // If false, a user cannot dismiss the nag message.
-            'dismiss_msg'  => '',                      // If 'dismissable' is false, this message will be output at top of nag.
-            'is_automatic' => false,                   // Automatically activate plugins after installation or not.
-            'message'      => '',                      // Message to output right before the plugins table.
-            'strings'      => array(
-                'page_title'                      => __( 'Install Recommended Plugins', 'tgmpa' ),
-                'menu_title'                      => __( 'Install Plugins', 'tgmpa' ),
-                'installing'                      => __( 'Installing Plugin: %s', 'tgmpa' ), // %s = plugin name.
-                'oops'                            => __( 'Something went wrong with the plugin API.', 'tgmpa' ),
-                'notice_can_install_required'     => _n_noop( 'This theme requires the following plugin: %1$s.', 'This theme requires the following plugins: %1$s.' ), // %1$s = plugin name(s).
-                'notice_can_install_recommended'  => _n_noop( 'This theme recommends the following plugin: %1$s.', 'This theme recommends the following plugins: %1$s.' ), // %1$s = plugin name(s).
-                'notice_cannot_install'           => _n_noop( 'Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed.', 'Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed.' ), // %1$s = plugin name(s).
-                'notice_can_activate_required'    => _n_noop( 'The following required plugin is currently inactive: %1$s.', 'The following required plugins are currently inactive: %1$s.' ), // %1$s = plugin name(s).
-                'notice_can_activate_recommended' => _n_noop( 'The following recommended plugin is currently inactive: %1$s.', 'The following recommended plugins are currently inactive: %1$s.' ), // %1$s = plugin name(s).
-                'notice_cannot_activate'          => _n_noop( 'Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated.', 'Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated.' ), // %1$s = plugin name(s).
-                'notice_ask_to_update'            => _n_noop( 'The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s.', 'The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s.' ), // %1$s = plugin name(s).
-                'notice_cannot_update'            => _n_noop( 'Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated.', 'Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated.' ), // %1$s = plugin name(s).
-                'install_link'                    => _n_noop( 'Begin installing plugin', 'Begin installing plugins' ),
-                'activate_link'                   => _n_noop( 'Begin activating plugin', 'Begin activating plugins' ),
-                'return'                          => __( 'Return to Required Plugins Installer', 'tgmpa' ),
-                'plugin_activated'                => __( 'Plugin activated successfully.', 'tgmpa' ),
-                'complete'                        => __( 'All plugins installed and activated successfully. %s', 'tgmpa' ), // %s = dashboard link.
-                'nag_type'                        => 'updated' // Determines admin notice type - can only be 'updated', 'update-nag' or 'error'.
-            )
-        );
-
-        tgmpa( $plugins, $config );
-    }
-
-} // if tgm file exists
-
-$updater = WP_STARTER_LIB.'helpers/theme-updates/theme-update-checker.php';
-if(file_exists($updater)) {
-    //include('library/helpers/theme-updates/theme-update-checker.php'); // script to automatically update WP Starter from your WordPress backend
-    require WP_STARTER_LIB.'helpers/theme-updates/theme-update-checker.php';
-    $MyThemeUpdateChecker = new ThemeUpdateChecker(
-    'wp-starter',
-    'http://www.shambix.com/repo/wp-update-server-master/?action=get_metadata&slug=wp-starter'
-    );
-}
+require_once(WP_STARTER_LIB.'helpers/install_plugins.php');
 
 ?>

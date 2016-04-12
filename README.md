@@ -1,4 +1,4 @@
-# WP Starter `v 2.6.7`
+# WP Starter `v 2.7.2`
 
 A simple & lean WordPress Framework theme, with the latest Bootstrap and other WordPress handy functions.
 This is meant to be used as a Parent Theme, therefore it needs a companion, like [WP-Starter Child Theme](https://github.com/Jany-M/WP-Starter-Child-Theme) to work as intended.
