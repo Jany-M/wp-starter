@@ -1,21 +1,25 @@
 <?php
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - SETUP
 * [WP] Starter is a custom framework developed by Shambix @ http://www.shambix.com
 *
 -------------------------------------------------------------------------------- */
 
-define('WP_STARTER_VERS', '2.7');
+define('WP_STARTER_VERS', '2.7.1');
 if(!defined('WP_STARTER_LIB'))
     define('WP_STARTER_LIB', TEMPLATEPATH.'/libs/');
 
 // get_stylesheet_directory_uri(); // Child Theme
 // get_template_directory_uri(); // Parent Theme
 
-// THEME
+// THEME & WP
 global $locale;
 $locale = get_locale();
+if(!defined('WP_HOME'))
+    define('WP_HOME', get_bloginfo('url'));
+if(!defined('WP_SITEURL'))
+    define('WP_SITEURL', get_bloginfo('url'));
 
 // WPML / if installed
 if(array_key_exists('sitepress', $GLOBALS)) {
@@ -23,7 +27,7 @@ if(array_key_exists('sitepress', $GLOBALS)) {
 	$deflang = $sitepress->get_default_language(); // This is WP default lang, as set from WPML
     global $deflang;
 	if(defined('ICL_LANGUAGE_CODE')) {
-		$lang = ICL_LANGUAGE_CODE; // This is the 
+		$lang = ICL_LANGUAGE_CODE; // This is the
         global $lang;
 	}
 } else {
@@ -37,24 +41,24 @@ function wp_starter_theme_setup() {
     add_theme_support( 'widgets' );
 	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' )); // allows the use of HTML5 markup for the comment lists, comment forms, search forms and galleries
 
-    // ADD WOOCOMMERCE 
+    // ADD WOOCOMMERCE
     add_theme_support( 'woocommerce' ); // using woocommerce with child themes can lead to issues
 }
 add_action('after_setup_theme','wp_starter_theme_setup');
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - CSS & JS
 *
 -------------------------------------------------------------------------------- */
 
 function load_files() {
-    
+
     	// ------------- JS
         wp_deregister_script( 'jquery' );
     	// Latest jQuery - IE <9 not supported
         wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js", array(), '2.1.4');
-		
+
     	// This version is older and discontinued, but is more compatible with existing scripts & plugins
     	//wp_register_script( 'jquery', '//code.jquery.com/jquery-1.11.2.min.js', '', '1.11.2');*/
         wp_enqueue_script( 'jquery' );
@@ -62,7 +66,7 @@ function load_files() {
     	wp_enqueue_script( 'boostrap_js' );
     	wp_register_script( 'modernizr', get_template_directory_uri() . '/library/js/modernizr.custom.js', '', '2.8.3', true );
     	wp_enqueue_script('modernizr');
-    	
+
     	// -------------- CSS
     	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', array(), '4.3.0', 'all');
     	wp_enqueue_style( 'fontawesome_css' );
@@ -81,7 +85,7 @@ if(!is_admin()) {
 }
 add_action('login_head', 'wp_starter_login_css');*/
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - DEV* HELPERS
 *
@@ -133,7 +137,7 @@ function add_screen_help( $contextual_help, $screen_id, $screen ) {
     $regposts .= '</ul>';
     // Combine $variables list with $hooks list.
     $help_content = $infotitle . $variables . $hooks . $regposts;
-    
+
     // Add [WP] Starter Debug tab
     $screen->add_help_tab( array(
         'id'      => 'wpstarter-debug',
@@ -162,6 +166,7 @@ function add_screen_help( $contextual_help, $screen_id, $screen ) {
     // Quick Reference Links
     $links = '<ul style="width:50%;float:left;"><h3 style="cleare:both; width:100%">Quick Reference Links</h3>
         <li><a href="https://codex.wordpress.org/Global_Variables" target="_blank">WordPress Globals</a></li>
+        <li><a href="http://wpengineer.com/2382/wordpress-constants-overview/" target="_blank">WordPress Constants</li>
         <li><a href="https://codex.wordpress.org/Class_Reference/WP_Query" target="_blank">WP Query</a></li>
     </ul>';
 
@@ -177,7 +182,7 @@ function add_screen_help( $contextual_help, $screen_id, $screen ) {
     return $contextual_help;
 }
 
-// ADD Custom Tab to HELP 
+// ADD Custom Tab to HELP
 /*add_action( "load-{$GLOBALS['pagenow']}", 'add_debug_tab', 20 );
 function add_debug_tab () {
     $screen = get_current_screen();
@@ -196,7 +201,7 @@ function remove_wp_tabs () {
     $screen->remove_help_tabs();
 }
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - DEV* REQUIRED & RECOMMENDED PLUGINS
 *
