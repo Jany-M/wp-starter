@@ -77,6 +77,10 @@ if(!is_admin()) {
     add_action('wp_enqueue_scripts', 'load_files');
 }
 
+// Remove the emoji stuff from your Stuff - Who asked for it anyway
+remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+remove_action( 'wp_print_styles', 'print_emoji_styles' );
+
 // Custom Login form CSS
 /*function wp_starter_login_css() {
     echo '<link rel="stylesheet" href="' . get_stylesheet_directory_uri() . '/library/css/login.css">';
