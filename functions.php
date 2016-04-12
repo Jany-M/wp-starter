@@ -31,7 +31,7 @@ if(array_key_exists('sitepress', $GLOBALS)) {
         global $lang;
 	}
 } else {
-	//$lang = $locale; //set your default lang
+	$lang = $locale; //set your default lang
 }
 
 // ADD THEME SUPPORT
@@ -39,8 +39,7 @@ function wp_starter_theme_setup() {
 	add_theme_support('post-thumbnails');
 	add_theme_support( 'menus' );
     add_theme_support( 'widgets' );
-	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' )); // allows the use of HTML5 markup for the comment lists, comment forms, search forms and galleries
-
+	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' ));
     // ADD WOOCOMMERCE
     add_theme_support( 'woocommerce' ); // using woocommerce with child themes can lead to issues
 }
