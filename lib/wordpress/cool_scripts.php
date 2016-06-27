@@ -2,7 +2,7 @@
 
 global $theme_name;
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - BACKEND
 *
@@ -25,6 +25,17 @@ function remove_comments_rss( $for_comments ) {
 }
 add_filter('post_comments_feed_link','remove_comments_rss');
 
+// Add images to Feeds
+function featuredtoRSS($content) {
+	global $post;
+	if ( has_post_thumbnail( $post->ID ) ){
+		$content = '<div>' . get_the_post_thumbnail( $post->ID, 'medium', array( 'style' => 'margin-bottom: 15px;' ) ) . '</div>' . $content;
+	}
+	return $content;
+}
+add_filter('the_excerpt_rss', 'featuredtoRSS');
+add_filter('the_content_feed', 'featuredtoRSS');
+
 // Remove Top Admin Bar in Frontend
 function remove_wp_adminbar() {
 	if( has_filter('show_admin_bar') ) {
@@ -43,14 +54,14 @@ function remove_wp_adminbar() {
 	remove_action('wp_footer','wp_admin_bar_dev_js');
 	add_theme_support( 'admin-bar', array( 'callback' => '__return_false') );
 	add_filter( 'show_admin_bar', '__return_false' );
-	remove_action( 'personal_options', '_admin_bar_preferences' ); 
+	remove_action( 'personal_options', '_admin_bar_preferences' );
 }
 if (!is_admin()){
 	add_action('after_setup_theme', 'remove_wp_adminbar');
 }
 
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - USER PROFILE
 *
@@ -130,7 +141,7 @@ function get_author_role() {
     return $author_role;
 }
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - RELATED POSTS
 *
@@ -170,7 +181,7 @@ if (!function_exists('related_posts')) {
 	}
 }
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - EXCERPTS
 *
@@ -202,7 +213,7 @@ function shorten($string, $lenght) {
 }
 
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - OBJECTS CAPABILITY
 *
@@ -214,7 +225,7 @@ function shorten($string, $lenght) {
 }
 add_action('init', 'post_type_ext');*/
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - RETRIEVE OBJECT INFO
 *
@@ -291,7 +302,7 @@ function get_id_by_slug($page_slug) {
 	} else {
 		return null;
 	}
-} 
+}
 
 // Check if a Plugin is active from Theme
 function plugin_is_active($plugin_folder, $plugin_file) {
@@ -299,7 +310,7 @@ function plugin_is_active($plugin_folder, $plugin_file) {
 	return in_array( $plugin_folder. '/' .$plugin_file. '.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) );
 }
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - PAGINATION
 *
@@ -360,7 +371,7 @@ if (!function_exists('custom_query_pagination')) {
 	}
 }
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - FORMATTING
 *
@@ -371,7 +382,7 @@ function filter_ptags_on_images($content){
 }
 //add_filter('the_content', 'filter_ptags_on_images');
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - SEARCH CAPABILITIES
 *
@@ -387,7 +398,7 @@ function filter_ptags_on_images($content){
 }
 add_filter( 'pre_get_posts', 'sh_search_filter' );*/
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - MULTILANG (WPML)
 *
@@ -407,7 +418,7 @@ if (!function_exists('languages_list_header')) {
 	}
 }
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - FRONTEND
 *
@@ -496,7 +507,7 @@ if (!function_exists('breadcrumbs')) {
 		$delimiter   = ' / '; // delimiter between crumbs
 		$before      = '<li class="active">'; // tag before the current crumb
 		$after       = '</li>'; // tag after the current crumb
-			
+
 		$homeLink = get_bloginfo('url') . '/';
 		$linkBefore = '<li typeof="v:Breadcrumb">';
 		$linkAfter = '</li>';
@@ -511,7 +522,7 @@ if (!function_exists('breadcrumbs')) {
 
 			echo '<div id="crumbs" xmlns:v="http://rdf.data-vocabulary.org/#">' . sprintf($link, $homeLink, $text['home']) . $delimiter;
 
-			
+
 			if ( is_category() ) {
 				$thisCat = get_category(get_query_var('cat'), false);
 				if ($thisCat->parent != 0) {
@@ -531,7 +542,7 @@ if (!function_exists('breadcrumbs')) {
 					echo $cats;
 				}
 				echo $before . sprintf($text['tax'], single_cat_title('', false)) . $after;
-			
+
 			}elseif ( is_search() ) {
 				echo $before . sprintf($text['search'], get_search_query()) . $after;
 
@@ -619,7 +630,7 @@ if (!function_exists('breadcrumbs')) {
 	}
 }
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - WOOCOMMERCE
 *
@@ -629,14 +640,14 @@ if (!function_exists('breadcrumbs')) {
 /*add_action( 'woocommerce_thankyou', 'custom_woocommerce_auto_complete_order' );
 function custom_woocommerce_auto_complete_order( $order_id ) {
     global $woocommerce;
- 
+
     if ( !$order_id )
         return;
     $order = new WC_Order( $order_id );
     $order->update_status( 'completed' );
 }*/
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - FONT AWESOME
 *
@@ -659,7 +670,7 @@ function fontAwesome($path){
 // Usage
 //$icons = fontAwesome(get_stylesheet_directory_uri().'/css/font-awesome.css');
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - CREDITS & LOGIN
 *
@@ -683,7 +694,7 @@ function custom_login_css() {
 			text-align: center;
 		}
 	</style>
-	<?php 
+	<?php
 }
 add_action('login_head', 'custom_login_css');
 function wp_starter_login_footer() {
@@ -722,7 +733,7 @@ function wp_starter_login_title() {
 add_filter('login_headertitle', 'wp_starter_login_title');
 
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - SOCIAL MEDIA SCRIPTS
 *
