@@ -25,6 +25,17 @@ function remove_comments_rss( $for_comments ) {
 }
 add_filter('post_comments_feed_link','remove_comments_rss');
 
+// Add images to Feeds
+function featuredtoRSS($content) {
+	global $post;
+	if ( has_post_thumbnail( $post->ID ) ){
+		$content = '<div>' . get_the_post_thumbnail( $post->ID, 'medium', array( 'style' => 'margin-bottom: 15px;' ) ) . '</div>' . $content;
+	}
+	return $content;
+}
+add_filter('the_excerpt_rss', 'featuredtoRSS');
+add_filter('the_content_feed', 'featuredtoRSS');
+
 // Remove Top Admin Bar in Frontend
 function remove_wp_adminbar() {
 	if( has_filter('show_admin_bar') ) {
@@ -333,15 +344,8 @@ if (!function_exists('custom_pagination')) {
 // Custom Loop Pagination
 if (!function_exists('custom_query_pagination')) {
 	function custom_query_pagination($prev = 'Previous', $next = 'Next') {
-		// You need add some stuff to your code, for this function to work
+		// You need to save your custom query as global $custom_query first, or this wont work
 		/*
-		Add this before the query
-		$paged = ( get_query_var('paged') ) ? get_query_var('paged') : 1;
-
-		Then this inside the query args
-		'paged' => $paged,
-
-		Finally, this after the query
 		global $custom_query;
 		$custom_query = $your_query;
 		*/
@@ -450,10 +454,10 @@ function remove_code( $data ) {
 add_action('init', 'wp_starter_head_cleanup_extra');*/
 
 // remove WP version from RSS
-function wp_bootstrap_rss_version() {
+function wp_rss_version() {
 	return '';
 }
-add_filter('the_generator', 'wp_bootstrap_rss_version');
+add_filter('the_generator', 'wp_rss_version');
 
 // Rimuovi lang attribute per HTML5
 /*function create_valid_xhtml_1_1($language_attributes) {
@@ -517,7 +521,6 @@ if (!function_exists('breadcrumbs')) {
 		} else {
 
 			echo '<div id="crumbs" xmlns:v="http://rdf.data-vocabulary.org/#">' . sprintf($link, $homeLink, $text['home']) . $delimiter;
-
 
 			if ( is_category() ) {
 				$thisCat = get_category(get_query_var('cat'), false);
