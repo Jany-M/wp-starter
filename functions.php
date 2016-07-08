@@ -56,19 +56,18 @@ function load_files() {
     	// ------------- JS
         wp_deregister_script( 'jquery' );
     	// Latest jQuery - IE <9 not supported
-        wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js", array(), '2.1.4');
-
+        wp_register_script('jquery', 'http'.($_SERVER['SERVER_PORT'] == 443 ? 's' : '').'://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js', array(), '3.0.0');
     	// This version is older and discontinued, but is more compatible with existing scripts & plugins
     	//wp_register_script( 'jquery', '//code.jquery.com/jquery-1.11.2.min.js', '', '1.11.2');*/
         wp_enqueue_script( 'jquery' );
-    	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', array('jquery'), '3.3.6', true);
+    	wp_register_script( 'boostrap_js', 'http'.($_SERVER['SERVER_PORT'] == 443 ? 's' : '').'://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', array('jquery'), '3.3.6', true);
     	wp_enqueue_script( 'boostrap_js' );
 
 
     	// -------------- CSS
-    	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', array(), '4.5.0', 'all');
+    	wp_register_style( 'fontawesome_css', 'http'.($_SERVER['SERVER_PORT'] == 443 ? 's' : '').'://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css', array(), '4.6.3', 'all');
     	wp_enqueue_style( 'fontawesome_css' );
-    	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', array(), '3.3.6', 'all');
+    	wp_register_style( 'bootstrap_css', 'http'.($_SERVER['SERVER_PORT'] == 443 ? 's' : '').'://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', array(), '3.3.6', 'all');
     	wp_enqueue_style( 'bootstrap_css' );
 }
 
