@@ -53,16 +53,9 @@ add_action('after_setup_theme','wp_starter_theme_setup');
 
 function load_files() {
 
-    	// ------------- JS
-        wp_deregister_script( 'jquery' );
-    	// Latest jQuery - IE <9 not supported
-        wp_register_script('jquery', 'http'.($_SERVER['SERVER_PORT'] == 443 ? 's' : '').'://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js', array(), '3.0.0');
-    	// This version is older and discontinued, but is more compatible with existing scripts & plugins
-    	//wp_register_script( 'jquery', '//code.jquery.com/jquery-1.11.2.min.js', '', '1.11.2');*/
-        wp_enqueue_script( 'jquery' );
+        // --------------- JS
     	wp_register_script( 'boostrap_js', 'http'.($_SERVER['SERVER_PORT'] == 443 ? 's' : '').'://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', array('jquery'), '3.3.6', true);
     	wp_enqueue_script( 'boostrap_js' );
-
 
     	// -------------- CSS
     	wp_register_style( 'fontawesome_css', 'http'.($_SERVER['SERVER_PORT'] == 443 ? 's' : '').'://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css', array(), '4.6.3', 'all');
