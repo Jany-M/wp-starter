@@ -7,8 +7,10 @@
 -------------------------------------------------------------------------------- */
 
 define('WP_STARTER_VERS', '2.7.1');
-if(!defined('WP_STARTER_LIB'))
-    define('WP_STARTER_LIB', TEMPLATEPATH.'/lib/');
+if(!defined('WP_STARTER_LIB_PATH'))
+    define('WP_STARTER_LIB_PATH', TEMPLATEPATH.'/lib/');
+if(!defined('WP_STARTER_LIB_URL'))
+    define('WP_STARTER_LIB_URL', get_template_directory_uri().'/lib/');
 
 // get_stylesheet_directory_uri(); // Child Theme
 // get_template_directory_uri(); // Parent Theme
@@ -85,7 +87,7 @@ add_action('login_head', 'wp_starter_login_css');*/
 *
 -------------------------------------------------------------------------------- */
 
-require_once(WP_STARTER_LIB.'wordpress/contextual_help.php');
+require_once(WP_STARTER_LIB_PATH.'wordpress/contextual_help.php');
 
 // REMOVE WP DEFAULT HELP TABS
 //$screen->remove_help_tab( $id )
@@ -101,6 +103,6 @@ function remove_wp_tabs () {
 *
 -------------------------------------------------------------------------------- */
 
-require_once(WP_STARTER_LIB.'helpers/install_plugins.php');
+require_once(WP_STARTER_LIB_PATH.'helpers/install_plugins.php');
 
 ?>
