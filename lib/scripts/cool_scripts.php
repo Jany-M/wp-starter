@@ -704,9 +704,9 @@ add_action('login_footer', 'wp_starter_login_footer');
 // Custom Login form Image
 if (!function_exists('wp_starter_login_logo') || !function_exists('custom_login_logo')) {
 	function wp_starter_login_logo() {
-		$def_login_img_url = WP_STARTER_LIB_URL.'helpers/shambix.png';
-		$def_login_img_w = '180px';
-		$def_login_img_h = '180px';
+		$def_login_img_url = WP_STARTER_LIB_URL.'shambix.png';
+		$def_login_img_w = '100px';
+		$def_login_img_h = '100px';
 		?>
 		<style type="text/css">
 			body.login div#login h1 a {

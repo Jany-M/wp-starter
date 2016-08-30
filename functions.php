@@ -6,7 +6,7 @@
 *
 -------------------------------------------------------------------------------- */
 
-define('WP_STARTER_VERS', '2.7.1');
+define('WP_STARTER_VERS', '2.7.5');
 if(!defined('WP_STARTER_LIB_PATH'))
     define('WP_STARTER_LIB_PATH', TEMPLATEPATH.'/lib/');
 if(!defined('WP_STARTER_LIB_URL'))
@@ -24,7 +24,7 @@ if(!defined('WP_SITEURL'))
     define('WP_SITEURL', get_bloginfo('url'));
 
 // WPML / if installed
-if(array_key_exists('sitepress', $GLOBALS)) {
+/*if(array_key_exists('sitepress', $GLOBALS)) {
 	global $sitepress;
 	$deflang = $sitepress->get_default_language(); // This is WP default lang, as set from WPML
     global $deflang;
@@ -33,8 +33,9 @@ if(array_key_exists('sitepress', $GLOBALS)) {
         global $lang;
 	}
 } else {
-	$lang = $locale; //set your default lang
-}
+	//$lang = $locale; //set your default lang
+    $lang = '';
+}*/
 
 // ADD THEME SUPPORT
 function wp_starter_theme_setup() {
@@ -87,7 +88,7 @@ add_action('login_head', 'wp_starter_login_css');*/
 *
 -------------------------------------------------------------------------------- */
 
-require_once(WP_STARTER_LIB_PATH.'wordpress/contextual_help.php');
+require_once(WP_STARTER_LIB_PATH.'scripts/contextual_help.php');
 
 // REMOVE WP DEFAULT HELP TABS
 //$screen->remove_help_tab( $id )
@@ -103,6 +104,6 @@ function remove_wp_tabs () {
 *
 -------------------------------------------------------------------------------- */
 
-require_once(WP_STARTER_LIB_PATH.'helpers/install_plugins.php');
+//require_once(WP_STARTER_LIB_PATH.'plugins/install_plugins.php');
 
 ?>
