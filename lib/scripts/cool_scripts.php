@@ -405,7 +405,7 @@ add_filter( 'pre_get_posts', 'sh_search_filter' );*/
 -------------------------------------------------------------------------------- */
 
 // Custom Lang Selector
-if (!function_exists('languages_list_header')) {
+if (!function_exists('languages_list_header') && function_exists('icl_get_languages')) {
 	function languages_list_header(){
 	    $languages = icl_get_languages('skip_missing=0&orderby=code');
 	    if(!empty($languages)){
@@ -415,6 +415,21 @@ if (!function_exists('languages_list_header')) {
 				if(!$l['active']) echo '</a>';
 	        }
 	    }
+	}
+}
+
+// Get native lang name from lang code
+if (!function_exists('get_language_name') && function_exists('icl_get_languages')) {
+	function get_language_name($code=''){
+		global $sitepress;
+		$details = $sitepress->get_language_details($code);
+		/*$language_name = $details['english_name'];
+		return $language_name;*/
+		return $details;
+
+		/*  This is the return array. Echo the value you need.
+			array(10) {   ["code"]=>   string(2) "it"   ["id"]=>   string(2) "27"   ["english_name"]=>   string(7) "Italian"   ["native_name"]=>   string(8) "Italiano"   ["major"]=>   string(1) "1"   ["active"]=>   string(1) "1"   ["default_locale"]=>   string(5) "it_IT"   ["encode_url"]=>   string(1) "0"   ["tag"]=>   string(5) "it-IT"   ["display_name"]=>   string(8) "Italiano" }
+		*/
 	}
 }
 
