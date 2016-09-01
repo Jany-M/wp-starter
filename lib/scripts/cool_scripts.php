@@ -1,7 +1,5 @@
 <?php
 
-global $theme_name;
-
 /* --------------------------------------------------------------------------------
 *
 * [WP] Starter - BACKEND
@@ -332,8 +330,8 @@ if (!function_exists('custom_pagination')) {
 		'end_size' => 2,
 		'mid_size' => 3,
 		'prev_next' => true,
-		'prev_text' => __($prev, $theme_name),
-		'next_text' => __($next, $theme_name),
+		'prev_text' => __($prev, TEXT_DOMAIN),
+		'next_text' => __($next, TEXT_DOMAIN),
 		'type' => 'list'
 		));
 		$pagination = str_replace('page-numbers', 'pagination', $pagination);
@@ -360,8 +358,8 @@ if (!function_exists('custom_query_pagination')) {
 			'end_size' => 2,
 			'mid_size' => 3,
 			'prev_next' => true,
-			'prev_text' => __($prev, $theme_name),
-			'next_text' => __($next, $theme_name),
+			'prev_text' => __($prev, TEXT_DOMAIN),
+			'next_text' => __($next, TEXT_DOMAIN),
 			'type' => 'list'
 		));
 		$pagination = str_replace('page-numbers', 'pagination', $pagination);
@@ -423,8 +421,6 @@ if (!function_exists('get_language_name') && function_exists('icl_get_languages'
 	function get_language_name($code=''){
 		global $sitepress;
 		$details = $sitepress->get_language_details($code);
-		/*$language_name = $details['english_name'];
-		return $language_name;*/
 		return $details;
 
 		/*  This is the return array. Echo the value you need.
@@ -719,7 +715,7 @@ add_action('login_footer', 'wp_starter_login_footer');
 // Custom Login form Image
 if (!function_exists('wp_starter_login_logo') || !function_exists('custom_login_logo')) {
 	function wp_starter_login_logo() {
-		$def_login_img_url = WP_STARTER_LIB_URL.'shambix.png';
+		$def_login_img_url = WP_STARTER_ASSETS_URL.'img/shambix.png';
 		$def_login_img_w = '100px';
 		$def_login_img_h = '100px';
 		?>

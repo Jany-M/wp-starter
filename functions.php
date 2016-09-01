@@ -6,36 +6,19 @@
 *
 -------------------------------------------------------------------------------- */
 
-define('WP_STARTER_VERS', '2.7.5');
+// TO DO
+// move admin styles to assets/css/admin.css
+
+define('WP_STARTER_VERS', '2.8');
+
 if(!defined('WP_STARTER_LIB_PATH'))
     define('WP_STARTER_LIB_PATH', TEMPLATEPATH.'/lib/');
 if(!defined('WP_STARTER_LIB_URL'))
     define('WP_STARTER_LIB_URL', get_template_directory_uri().'/lib/');
-
-// get_stylesheet_directory_uri(); // Child Theme
-// get_template_directory_uri(); // Parent Theme
-
-// THEME & WP
-global $locale;
-$locale = get_locale();
-if(!defined('WP_HOME'))
-    define('WP_HOME', get_bloginfo('url'));
-if(!defined('WP_SITEURL'))
-    define('WP_SITEURL', get_bloginfo('url'));
-
-// WPML / if installed
-/*if(array_key_exists('sitepress', $GLOBALS)) {
-	global $sitepress;
-	$deflang = $sitepress->get_default_language(); // This is WP default lang, as set from WPML
-    global $deflang;
-	if(defined('ICL_LANGUAGE_CODE')) {
-		$lang = ICL_LANGUAGE_CODE; // This is the
-        global $lang;
-	}
-} else {
-	//$lang = $locale; //set your default lang
-    $lang = '';
-}*/
+if(!defined('WP_STARTER_ASSETS_PATH'))
+    define('WP_STARTER_ASSETS_PATH', TEMPLATEPATH.'/assets/');
+if(!defined('WP_STARTER_ASSETS_URL'))
+    define('WP_STARTER_ASSETS_URL', get_template_directory_uri().'/assets/');
 
 // ADD THEME SUPPORT
 function wp_starter_theme_setup() {
@@ -72,9 +55,17 @@ if(!is_admin()) {
     add_action('wp_enqueue_scripts', 'load_files');
 }
 
-// Remove the emoji stuff from your Stuff - Who asked for it anyway
+// Remove the emoji detection - Who asked for it anyway
 remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 remove_action( 'wp_print_styles', 'print_emoji_styles' );
+
+// Add css for Backend Editor
+function admin_styles() {
+    add_editor_style(WP_STARTER_ASSETS_URL.'css/admin.css' );
+}
+if(file_exists(WP_STARTER_ASSETS_PATH.'css/admin.css')) {
+	add_action( 'admin_init', 'admin_styles' );
+}
 
 // Custom Login form CSS
 /*function wp_starter_login_css() {
