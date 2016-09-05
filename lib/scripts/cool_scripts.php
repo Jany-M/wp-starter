@@ -3,6 +3,7 @@
 /* --------------------------------------------------------------------------------
 *
 * [WP] Starter - BACKEND
+* v2.8.1
 *
 -------------------------------------------------------------------------------- */
 
@@ -819,5 +820,160 @@ add_filter('login_headertitle', 'wp_starter_login_title');
 		}
 	}
 }*/
+
+/* --------------------------------------------------------------------------------
+*
+* [WP] Starter - PERFORMANCE
+*
+-------------------------------------------------------------------------------- */
+
+// Flush Transients button from Admin bar
+if(!function_exists('flush_transients_button')) {
+	function flush_transients_button() {
+		global $wp_admin_bar;
+
+		// If User isnt even logged in or if admin bar is disabled
+		if ( !is_user_logged_in() || !is_admin_bar_showing() )
+			return false;
+
+		// If user doesnt have the perms
+		if ( function_exists('current_user_can') && false == current_user_can('activate_plugins') )
+			return false;
+
+		// Button args
+		$wp_admin_bar->add_menu( array(
+			'parent' => '',
+			'id' => 'flush_transients_button',
+			'title' => __( 'Flush Transients' ),
+			'meta' => array( 'title' => __( 'Delete all WP Transients (in wp_options table)' )),
+			'href' => wp_nonce_url( admin_url( 'index.php?action=deltransientpage'), 'flush_transients_button' ))
+		);
+	}
+	add_action( 'admin_bar_menu', 'flush_transients_button', 35 );
+}
+
+// Flush transients function
+if(!function_exists('flush_transients')) {
+	function flush_transients() {
+		global $_wp_using_ext_object_cache;
+
+		// Check Perms
+		if ( function_exists('current_user_can') && false == current_user_can('activate_plugins') )
+			return false;
+
+		// Flush Cache
+		if ( isset( $_GET[ 'action' ] ) && $_GET[ 'action' ] == 'deltransientpage' && ( isset( $_GET[ '_wpnonce' ] ) ? wp_verify_nonce( $_REQUEST[ '_wpnonce' ], 'flush_transients_button' ) : false ) ) {
+
+	    	// Get all Transients
+	    	global $wpdb;
+	    	$sql = "SELECT `option_name` AS `name`, `option_value` AS `value`
+	    			FROM  $wpdb->options
+	            	WHERE `option_name` LIKE '%transient_%'
+	            	ORDER BY `option_name`";
+	    	$get_all_site_transients = $wpdb->get_results( $sql );
+
+			// Delete all Transients
+	    	foreach ($get_all_site_transients as $transient) {
+				$transient_name = str_replace(array('_transient_timeout_', '_transient_', '_site_transient_', '_site_transient_timeout_'), '', $transient->name);
+	    		delete_transient($transient_name);
+	    	}
+
+	    	// If using object cache
+	    	if($_wp_using_ext_object_cache) {
+		    	wp_cache_flush();
+	    	}
+
+			wp_redirect(admin_url().'?cache_type=transients&cache_status=flushed');
+			die();
+		} else {
+			wp_redirect(admin_url().'?cache_type=transients&cache_status=not_flushed');
+			die();
+		}
+
+	}
+	if ( isset( $_GET[ 'action' ] ) && $_GET[ 'action' ] == 'deltransientpage' ) {
+		add_action( 'admin_init', 'flush_transients');
+	}
+}
+
+// Flushed transients message
+if(!function_exists('flush_display_admin_msg')) {
+	function flush_display_admin_msg() {
+		if($_GET[ 'cache_status' ] == '')
+			return;
+
+		// Display Msg
+		if ( $_GET[ 'cache_status' ] == 'flushed' ) { ?>
+		    <div class="updated">
+		        <p><?php echo ucwords($_GET[ 'cache_type' ]); ?> Cache was successfully flushed.</p>
+		    </div>
+	    	<?php
+		} elseif ( $_GET[ 'cache_status' ] == 'not_flushed' ) { ?>
+		    <div class="error">
+		        <p><?php echo ucwords($_GET[ 'cache_type' ]); ?> Cache was NOT flushed.</p>
+		    </div>
+	    	<?php
+		}
+	}
+	add_action( 'admin_notices', 'flush_display_admin_msg' );
+}
+
+// Schedule the CRON Job to purge all expired transients
+if (!wp_next_scheduled('purge_popup_transients_cron')) {
+	wp_schedule_event( time(), 'daily', 'purge_popup_transients_cron');
+}
+add_action( 'purg_transients_cron',  'purge_transients', 10 ,2);
+/**
+ * Deletes all transients that have expired
+ */
+function purge_popup_transients($older_than = '1 day', $safemode = true) {
+	global $wpdb;
+	$older_than_time = strtotime('-' . $older_than);
+	/**
+	 * Only check if the transients are older than the specified time
+	 */
+	if ( $older_than_time > time() || $older_than_time < 1 ) {
+		return false;
+	}
+	/**
+	 * Get all the expired transients
+	 */
+	$transients = $wpdb->get_col(
+		$wpdb->prepare( "
+				SELECT REPLACE(option_name, '_transient_timeout_', '') AS transient_name
+				FROM {$wpdb->options}
+				WHERE option_name LIKE '\_transient\_timeout\__%%'
+					AND option_value < %s
+		", $older_than_time)
+	);
+	/**
+	 * If safemode is ON just use the default WordPress get_transient() function
+	 * to delete the expired transients
+	 */
+	if ( $safemode ) {
+		foreach( $transients as $transient ) {
+			get_transient($transient);
+		}
+	}
+	/**
+	 * If safemode is OFF the just manually delete all the transient rows in the database
+	 */
+	else {
+		$options_names = array();
+		foreach($transients as $transient) {
+			$options_names[] = '_transient_' . $transient;
+			$options_names[] = '_transient_timeout_' . $transient;
+		}
+		if ($options_names) {
+			$options_names = array_map(array($wpdb, 'escape'), $options_names);
+			$options_names = "'". implode("','", $options_names) ."'";
+			$result = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name IN ({$options_names})" );
+			if (!$result) {
+				return false;
+			}
+		}
+	}
+	return $transients;
+}
 
 ?>

@@ -9,7 +9,7 @@
 // TO DO
 // move admin styles to assets/css/admin.css
 
-define('WP_STARTER_VERS', '2.8');
+define('WP_STARTER_VERS', '2.8.1');
 
 if(!defined('WP_STARTER_LIB_PATH'))
     define('WP_STARTER_LIB_PATH', TEMPLATEPATH.'/lib/');
