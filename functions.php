@@ -9,7 +9,7 @@
 // TO DO
 // move admin styles to assets/css/admin.css
 
-define('WP_STARTER_VERS', '2.8.1');
+define('WP_STARTER_VERS', '2.9');
 
 if(!defined('WP_STARTER_LIB_PATH'))
     define('WP_STARTER_LIB_PATH', TEMPLATEPATH.'/lib/');
@@ -40,13 +40,13 @@ add_action('after_setup_theme','wp_starter_theme_setup');
 function load_files() {
 
         // --------------- JS
-    	wp_register_script( 'boostrap_js', 'http'.($_SERVER['SERVER_PORT'] == 443 ? 's' : '').'://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', array('jquery'), '3.3.6', true);
+    	wp_register_script( 'boostrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', array('jquery'), '3.3.7', true);
     	wp_enqueue_script( 'boostrap_js' );
 
     	// -------------- CSS
-    	wp_register_style( 'fontawesome_css', 'http'.($_SERVER['SERVER_PORT'] == 443 ? 's' : '').'://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css', array(), '4.6.3', 'all');
+    	wp_register_style( 'fontawesome_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css', array(), '4.7.0', 'all');
     	wp_enqueue_style( 'fontawesome_css' );
-    	wp_register_style( 'bootstrap_css', 'http'.($_SERVER['SERVER_PORT'] == 443 ? 's' : '').'://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', array(), '3.3.6', 'all');
+    	wp_register_style( 'bootstrap_css', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', array(), '3.3.7', 'all');
     	wp_enqueue_style( 'bootstrap_css' );
 }
 
@@ -79,7 +79,9 @@ add_action('login_head', 'wp_starter_login_css');*/
 *
 -------------------------------------------------------------------------------- */
 
-require_once(WP_STARTER_LIB_PATH.'scripts/contextual_help.php');
+if(file_exists(WP_STARTER_ASSETS_PATH.'scripts/contextual_help.php')) {
+    require_once WP_STARTER_LIB_PATH.'scripts/contextual_help.php';
+}
 
 // REMOVE WP DEFAULT HELP TABS
 //$screen->remove_help_tab( $id )
@@ -88,6 +90,18 @@ function remove_wp_tabs () {
     $screen = get_current_screen();
     $screen->remove_help_tabs();
 }
+
+function dont_activate_msg() { ?>
+	<div class="notice notice-error">
+	    <p><?php _e('<code>[WP] Starter</code> is a parent theme and it\'s not supposed to be activated nor edited', THEME_DOMAIN); ?>.</p>
+		<p><?php _e('In order to build on top of this parent, please download <code>[WP] Starter Child Theme</code> from <a href="https://github.com/Jany-M/WP-Starter-Child-Theme" target="_blank">GitHub</a> and place it in the folder <code>/wp-content/themes/</code>', THEME_DOMAIN); ?>.</p>
+        <p><?php _e('You can then start editing the child theme, rename it, add template files etc.', THEME_DOMAIN); ?>.</p>
+	</div>
+    <?php
+}
+$get_theme = wp_get_theme();
+if($get_theme->get( 'Name' ) == '[WP] Starter')
+    add_action( 'admin_notices', 'dont_activate_msg' );
 
 /* --------------------------------------------------------------------------------
 *

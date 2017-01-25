@@ -35,31 +35,6 @@ function featuredtoRSS($content) {
 add_filter('the_excerpt_rss', 'featuredtoRSS');
 add_filter('the_content_feed', 'featuredtoRSS');
 
-// Remove Top Admin Bar in Frontend
-function remove_wp_adminbar() {
-	if( has_filter('show_admin_bar') ) {
-		add_filter( 'show_admin_bar', '__return_false' );
-	}
-    wp_deregister_script( 'admin-bar' );
-    wp_deregister_style( 'admin-bar' );
-    remove_action('wp_footer','wp_admin_bar_render',1000);
-	remove_action('init','wp_admin_bar_init');
-	remove_action('wp_head','wp_admin_bar_render',1000);
-	remove_action('wp_head','wp_admin_bar_css');
-	remove_action('wp_head','wp_admin_bar_dev_css');
-	remove_action('wp_head','wp_admin_bar_rtl_css');
-	remove_action('wp_head','wp_admin_bar_rtl_dev_css');
-	remove_action('wp_footer','wp_admin_bar_js');
-	remove_action('wp_footer','wp_admin_bar_dev_js');
-	add_theme_support( 'admin-bar', array( 'callback' => '__return_false') );
-	add_filter( 'show_admin_bar', '__return_false' );
-	remove_action( 'personal_options', '_admin_bar_preferences' );
-}
-if (!is_admin()){
-	add_action('after_setup_theme', 'remove_wp_adminbar');
-}
-
-
 /* --------------------------------------------------------------------------------
 *
 * [WP] Starter - USER PROFILE
@@ -219,10 +194,10 @@ function shorten($string, $lenght) {
 -------------------------------------------------------------------------------- */
 
 //Add Excerpt Capability to Pages
-/*function post_type_ext() {
+function page_excerpt_extend() {
 	add_post_type_support( 'page', 'excerpt' );
 }
-add_action('init', 'post_type_ext');*/
+add_action('init', 'page_excerpt_extend');
 
 /* --------------------------------------------------------------------------------
 *
@@ -247,7 +222,7 @@ function has_attachment() {
 }
 
 // Get Category ID
-function wt_get_category_ID() {
+function get_category_ID() {
 	$category = get_the_category();
 	return $category[0]->cat_ID;
 }
@@ -343,11 +318,17 @@ if (!function_exists('custom_pagination')) {
 // Custom Loop Pagination
 if (!function_exists('custom_query_pagination')) {
 	function custom_query_pagination($prev = 'Previous', $next = 'Next') {
-		// You need to save your custom query as global $custom_query first, or this wont work
-		/*
+		/* --------------------------------------------------------------------------
+        If the query is on a STATIC FRONT page, then add before the query:
+        $paged = ( get_query_var('page') ) ? get_query_var('page') : 1;
+        otherwise use:
+        $paged = ( get_query_var('paged') ) ? get_query_var('paged') : 1;
+        Then, inside your query add this argument:
+        'paged' => $paged,
+        Finally, once the query is done, add this:
 		global $custom_query;
-		$custom_query = $your_query;
-		*/
+		$custom_query = $your_query_name;
+        --------------------------------------------------------------------------- */
 		global $custom_query;
 		$big = 99999999;
 		$pagination = paginate_links(array(
@@ -446,7 +427,7 @@ function wp_starter_head_cleanup() {
 	remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );            // previous link
 	remove_action( 'wp_head', 'start_post_rel_link', 10, 0 );             // start link
 	remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 ); // Links for Adjacent Posts
-	remove_action( 'wp_head', 'wp_generator' );                           // WP version
+	remove_action( 'wp_head', 'wp_generator', 999 );                      // WP version
 	//remove_action( 'wp_head', 'wp_shortlink_wp_head', 10, 0 );		  // Uncomment if you are using a custom url shortener
 }
 add_action('init', 'wp_starter_head_cleanup');
@@ -830,7 +811,16 @@ add_filter('login_headertitle', 'wp_starter_login_title');
 // Flush Transients button from Admin bar
 if(!function_exists('flush_transients_button')) {
 	function flush_transients_button() {
-		global $wp_admin_bar;
+		global  $wp_admin_bar,
+	            $_wp_using_ext_object_cache;
+
+		if(file_exists(WP_CONTENT_DIR.'/object-cache.php')) {
+		    return;
+		    //wp_using_ext_object_cache(true);
+		}
+
+	    if($_wp_using_ext_object_cache === true)
+	        return;
 
 		// If User isnt even logged in or if admin bar is disabled
 		if ( !is_user_logged_in() || !is_admin_bar_showing() )
@@ -856,6 +846,9 @@ if(!function_exists('flush_transients_button')) {
 if(!function_exists('flush_transients')) {
 	function flush_transients() {
 		global $_wp_using_ext_object_cache;
+
+		if($_wp_using_ext_object_cache === true)
+			return;
 
 		// Check Perms
 		if ( function_exists('current_user_can') && false == current_user_can('activate_plugins') )
@@ -899,7 +892,7 @@ if(!function_exists('flush_transients')) {
 // Flushed transients message
 if(!function_exists('flush_display_admin_msg')) {
 	function flush_display_admin_msg() {
-		if($_GET[ 'cache_status' ] == '')
+		if(!isset($_GET[ 'cache_status' ]) || $_GET[ 'cache_status' ] == '')
 			return;
 
 		// Display Msg
