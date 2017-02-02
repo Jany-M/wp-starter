@@ -9,7 +9,7 @@
 // TO DO
 // move admin styles to assets/css/admin.css
 
-define('WP_STARTER_VERS', '2.9');
+define('WP_STARTER_VERS', '2.9.1');
 
 if(!defined('WP_STARTER_LIB_PATH'))
     define('WP_STARTER_LIB_PATH', TEMPLATEPATH.'/lib/');
@@ -83,14 +83,7 @@ if(file_exists(WP_STARTER_ASSETS_PATH.'scripts/contextual_help.php')) {
     require_once WP_STARTER_LIB_PATH.'scripts/contextual_help.php';
 }
 
-// REMOVE WP DEFAULT HELP TABS
-//$screen->remove_help_tab( $id )
-add_action( 'admin_head', 'remove_wp_tabs', 1 );
-function remove_wp_tabs () {
-    $screen = get_current_screen();
-    $screen->remove_help_tabs();
-}
-
+// Theme Notices
 function dont_activate_msg() { ?>
 	<div class="notice notice-error">
 	    <p><?php _e('<code>[WP] Starter</code> is a parent theme and it\'s not supposed to be activated nor edited', THEME_DOMAIN); ?>.</p>

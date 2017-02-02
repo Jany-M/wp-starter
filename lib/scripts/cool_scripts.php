@@ -3,7 +3,6 @@
 /* --------------------------------------------------------------------------------
 *
 * [WP] Starter - BACKEND
-* v2.8.1
 *
 -------------------------------------------------------------------------------- */
 
@@ -34,6 +33,107 @@ function featuredtoRSS($content) {
 }
 add_filter('the_excerpt_rss', 'featuredtoRSS');
 add_filter('the_content_feed', 'featuredtoRSS');
+
+// Remove Customizer from Admin Menu
+function remove_sub_menus () {
+    remove_submenu_page('themes.php', 'customize.php'); //Customize
+}
+add_action('admin_menu', 'remove_sub_menus', 999);
+
+// Remove Customizer from Admin Bar
+function remove_customizer_admin_bar() {
+    global $wp_admin_bar;
+    $wp_admin_bar->remove_menu('customize');
+}
+add_action( 'wp_before_admin_bar_render', 'remove_customizer_admin_bar' );
+
+// Drop some customizer actions
+remove_action( 'plugins_loaded', '_wp_customize_include', 10);
+remove_action( 'admin_enqueue_scripts', '_wp_customize_loader_settings', 11);
+// Manually overrid Customizer behaviors
+function override_load_customizer_action() {
+    wp_die( __( 'The Customizer is currently disabled.', THEME_DOMAIN) );
+}
+add_action( 'load-customize.php','override_load_customizer_action', 999);
+// Remove customize capability
+function filter_to_remove_customize_capability( $caps = array(), $cap = '', $user_id = 0, $args = array() ) {
+    if ($cap == 'customize') {
+        return array('nope'); // thanks @ScreenfeedFr, http://bit.ly/1KbIdPg
+    }
+    return $caps;
+}
+add_filter( 'map_meta_cap', 'filter_to_remove_customize_capability', 10, 4 );
+
+/* --------------------------------------------------------------------------------
+*
+* [WP] Starter - FRONTEND
+*
+-------------------------------------------------------------------------------- */
+
+// Cleaning up the Wordpress Head output
+function wp_starter_head_cleanup() {
+	remove_action( 'wp_head', 'feed_links_extra', 3 );                    // Category Feeds
+	remove_action( 'wp_head', 'feed_links', 2 );                          // Post and Comment Feeds
+	remove_action( 'wp_head', 'rsd_link' );                               // EditURI link
+	remove_action( 'wp_head', 'wlwmanifest_link' );                       // Windows Live Writer
+	remove_action( 'wp_head', 'index_rel_link' );                         // index link
+	remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );            // previous link
+	remove_action( 'wp_head', 'start_post_rel_link', 10, 0 );             // start link
+	remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 ); // Links for Adjacent Posts
+	remove_action( 'wp_head', 'wp_generator', 999 );                      // WP version
+	//remove_action( 'wp_head', 'wp_shortlink_wp_head', 10, 0 );		  // Uncomment if you are using a custom url shortener
+}
+add_action('init', 'wp_starter_head_cleanup');
+
+// More cleanup - optional
+/*function wp_starter_head_cleanup_extra() {
+	add_filter( 'index_rel_link', 'remove_code' );
+	add_filter( 'parent_post_rel_link', 'remove_code' );
+	add_filter( 'start_post_rel_link', 'remove_code' );
+	add_filter( 'previous_post_rel_link', 'remove_code' );
+	add_filter( 'next_post_rel_link', 'remove_code' );
+	add_filter('post_comments_feed_link','remove_code');
+}
+function remove_code( $data ) {
+	return false;
+}
+add_action('init', 'wp_starter_head_cleanup_extra');*/
+
+// REMOVE WP DEFAULT HELP TABS
+//$screen->remove_help_tab( $id )
+function remove_wp_tabs () {
+    $screen = get_current_screen();
+    $screen->remove_help_tabs();
+}
+add_action( 'admin_head', 'remove_wp_tabs', 1 );
+
+// remove WP version from RSS
+function wp_rss_version() {
+	return '';
+}
+add_filter('the_generator', 'wp_rss_version');
+
+// Rimuovi lang attribute per HTML5
+/*function create_valid_xhtml_1_1($language_attributes) {
+	echo '';
+}
+add_filter('language_attributes', 'create_valid_xhtml_1_1');*/
+
+// Delete from Front-End Link
+/*function wp_delete_post_link($link = 'Delete This', $before = '', $after = '', $title="Move this item to the Trash", $cssClass="delete-post") {
+    global $post;
+    if ( $post->post_type == 'page' ) {
+        if ( !current_user_can( 'edit_page' ) )
+            return;
+    } else {
+        if ( !current_user_can( 'edit_post' ) )
+            return;
+    }
+    $delLink = wp_nonce_url( site_url() . "/wp-admin/post.php?action=trash&post=" . $post->ID, 'trash-' . $post->post_type . '_' . $post->ID);
+    $link = '<a class="' . $cssClass . '" href="' . $delLink . '" onclick="javascript:if(!confirm(\'Are you sure you want to move this item to trash?\')) return false;" title="'.$title.'" />'.$link."</a>";
+    //return $before . $link . $after;
+	echo $before . $link . $after;
+}*/
 
 /* --------------------------------------------------------------------------------
 *
@@ -413,74 +513,9 @@ if (!function_exists('get_language_name') && function_exists('icl_get_languages'
 
 /* --------------------------------------------------------------------------------
 *
-* [WP] Starter - FRONTEND
+* [WP] Starter - BREADCRUMBS
 *
 -------------------------------------------------------------------------------- */
-
-// Cleaning up the Wordpress Head output
-function wp_starter_head_cleanup() {
-	remove_action( 'wp_head', 'feed_links_extra', 3 );                    // Category Feeds
-	remove_action( 'wp_head', 'feed_links', 2 );                          // Post and Comment Feeds
-	remove_action( 'wp_head', 'rsd_link' );                               // EditURI link
-	remove_action( 'wp_head', 'wlwmanifest_link' );                       // Windows Live Writer
-	remove_action( 'wp_head', 'index_rel_link' );                         // index link
-	remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );            // previous link
-	remove_action( 'wp_head', 'start_post_rel_link', 10, 0 );             // start link
-	remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 ); // Links for Adjacent Posts
-	remove_action( 'wp_head', 'wp_generator', 999 );                      // WP version
-	//remove_action( 'wp_head', 'wp_shortlink_wp_head', 10, 0 );		  // Uncomment if you are using a custom url shortener
-}
-add_action('init', 'wp_starter_head_cleanup');
-
-// More cleanup - optional
-/*function wp_starter_head_cleanup_extra() {
-	add_filter( 'index_rel_link', 'remove_code' );
-	add_filter( 'parent_post_rel_link', 'remove_code' );
-	add_filter( 'start_post_rel_link', 'remove_code' );
-	add_filter( 'previous_post_rel_link', 'remove_code' );
-	add_filter( 'next_post_rel_link', 'remove_code' );
-	add_filter('post_comments_feed_link','remove_code');
-}
-function remove_code( $data ) {
-	return false;
-}
-add_action('init', 'wp_starter_head_cleanup_extra');*/
-
-// remove WP version from RSS
-function wp_rss_version() {
-	return '';
-}
-add_filter('the_generator', 'wp_rss_version');
-
-// Rimuovi lang attribute per HTML5
-/*function create_valid_xhtml_1_1($language_attributes) {
-	echo '';
-}
-add_filter('language_attributes', 'create_valid_xhtml_1_1');*/
-
-// Contact Form 7
-/*if(is_home() || function_exists( 'wpcf7_enqueue_scripts' )) {
-	wpcf7_enqueue_scripts();
-	wpcf7_enqueue_styles();
-}*/
-
-// Delete from Front-End Link
-/*function wp_delete_post_link($link = 'Delete This', $before = '', $after = '', $title="Move this item to the Trash", $cssClass="delete-post") {
-    global $post;
-    if ( $post->post_type == 'page' ) {
-        if ( !current_user_can( 'edit_page' ) )
-            return;
-    } else {
-        if ( !current_user_can( 'edit_post' ) )
-            return;
-    }
-    $delLink = wp_nonce_url( site_url() . "/wp-admin/post.php?action=trash&post=" . $post->ID, 'trash-' . $post->post_type . '_' . $post->ID);
-    $link = '<a class="' . $cssClass . '" href="' . $delLink . '" onclick="javascript:if(!confirm(\'Are you sure you want to move this item to trash?\')) return false;" title="'.$title.'" />'.$link."</a>";
-    //return $before . $link . $after;
-	echo $before . $link . $after;
-}*/
-
-// BREADCRUMBS
 // https://gist.github.com/melissacabral/4032941
 // http://www.html.it/articoli/breadcrumb-wordpress-senza-plugin/
 if (!function_exists('breadcrumbs')) {
@@ -632,7 +667,6 @@ if (!function_exists('breadcrumbs')) {
 /*add_action( 'woocommerce_thankyou', 'custom_woocommerce_auto_complete_order' );
 function custom_woocommerce_auto_complete_order( $order_id ) {
     global $woocommerce;
-
     if ( !$order_id )
         return;
     $order = new WC_Order( $order_id );
@@ -693,26 +727,6 @@ function wp_starter_login_footer() {
 	echo '<div id="shambix_credits" class="mute credits"><p id="backtoblog"><a href="https://github.com/Jany-M/WP-Starter" target="_blank">[WP] Starter</a> developed by <a href="http://www.shambix.com" target="_blank">Shambix</a></p></div>';
 }
 add_action('login_footer', 'wp_starter_login_footer');
-
-// Custom Login form Image
-if (!function_exists('wp_starter_login_logo') || !function_exists('custom_login_logo')) {
-	function wp_starter_login_logo() {
-		$def_login_img_url = WP_STARTER_ASSETS_URL.'img/shambix.png';
-		$def_login_img_w = '100px';
-		$def_login_img_h = '100px';
-		?>
-		<style type="text/css">
-			body.login div#login h1 a {
-				background-image: url(<?php echo $def_login_img_url; ?>);
-				background-size: auto auto;
-				padding-bottom: 0px;
-				width: <?php echo $def_login_img_w; ?>;
-				height: <?php echo $def_login_img_h; ?>;
-			}
-		</style>
-	<?php }
-	add_action('login_head', 'wp_starter_login_logo');
-}
 
 function wp_starter_login_url() {
 	get_bloginfo('siteurl');

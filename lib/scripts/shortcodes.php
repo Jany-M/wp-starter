@@ -2,7 +2,7 @@
 
 global $theme_name;
 
-/* -------------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------------
 *
 * [WP] Starter - SHORTCODES
 * v 2.5
@@ -17,18 +17,18 @@ function buttons( $atts, $content = null ) {
 	'size' => 'default', /* mini, small, default, large */
 	'url'  => '',
 	'target' => '',
-	'text' => '', 
+	'text' => '',
 	'sub' => '',
 	'modal' => '',
 	), $atts ) );
-	
+
 	if($type == "default"){
 		$type = "";
 	}
-	else{ 
+	else{
 		$type = "btn-".$type;
 	}
-	
+
 	if($size == "default"){
 		$size = "";
 	}
@@ -47,13 +47,13 @@ function buttons( $atts, $content = null ) {
 	if($modal !== '') {
 		$modal = 'data-toggle="modal" data-target=".'.$modal.'"';
 	}
-	
+
 	if($url !== '') {
 		$output = '<a href="'.$url.'" '.$target.' class="btn '.$type.' '.$size.'">';
 	} else {
 		$output = '<button class="btn '.$type.' '. $size.'" '.$modal.'>';
 	}
-	
+
 	$output .= $text;
 	$output .= $sub;
 
@@ -65,24 +65,24 @@ function buttons( $atts, $content = null ) {
 
 	return $output;
 }
-add_shortcode('button', 'buttons'); 
+add_shortcode('button', 'buttons');
 
 // Icons (font awesome)
 function icons( $atts, $content = null ) {
 	extract( shortcode_atts( array(
 	'type' => '', /* http://fortawesome.github.io/Font-Awesome/icons/ */
 	), $atts ) );
-		
+
 	$output = '<i class="fa fa-'.$type.'"></i>';
 	return $output;
 }
-add_shortcode('icon', 'icons'); 
+add_shortcode('icon', 'icons');
 
 // Alerts
 // [box color='blu' close='true']
 function alerts( $atts, $content = null ) {
 	extract( shortcode_atts( array(
-	'color' => 'green', 
+	'color' => 'green',
 	'close' => 'false', /* display close link */
 	'type' => 'success'
 	), $atts ) );
@@ -92,7 +92,7 @@ function alerts( $atts, $content = null ) {
 	if($color == 'blu' || $type == 'info') $color = 'info';
 	if($color == 'yellow' || $type == 'warning') $color = 'warning';
 	if($color == 'red' || $type == 'danger') $color = 'danger';
-	
+
 	if($close == 'true') {
 		$dismiss = 'alert-dismissible ';
 	}
@@ -102,7 +102,7 @@ function alerts( $atts, $content = null ) {
 		$output .= '<button type="button" class="close" data-dismiss="alert" aria-label="'.__('Close', $theme_name).'"><span aria-hidden="true">&times;</span></button>';
 	}
 	$output .= $content . '</div>';
-	
+
 	return $output;
 }
 add_shortcode('box', 'alerts');
@@ -113,7 +113,7 @@ function blockquotes( $atts, $content = null ) {
 	extract( shortcode_atts( array(
 	'float' => '' /* left, right */
 	), $atts ) );
-	
+
 	$output = '<blockquote';
 	if($float == 'left') {
 		$output .= ' class="pull-left"';
@@ -122,17 +122,26 @@ function blockquotes( $atts, $content = null ) {
 		$output .= ' class="pull-right"';
 	}
 	$output .= '><p>' . $content . '</p>';
-	
+
 	if($cite){
 		$output .= '<small>' . $content . '</small>';
 	}
-	
+
 	$output .= '</blockquote>';
 	return $output;
 }
-add_shortcode('blockquote', 'blockquotes'); 
- 
+add_shortcode('blockquote', 'blockquotes');
 
-
+// Google Map
+//Google Maps Shortcode
+function shortcode_googleMaps($atts, $content = null) {
+   extract(shortcode_atts(array(
+      "width" => '1170',
+      "height" => '500',
+      "src" => ''
+   ), $atts));
+   return '<iframe width="'.$width.'" height="'.$height.'" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'.$src.'&amp;output=embed"></iframe>';
+}
+add_shortcode("gmap", "shortcode_googleMaps");
 
 ?>
