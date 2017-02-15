@@ -9,7 +9,7 @@
 // TO DO
 // move admin styles to assets/css/admin.css
 
-define('WP_STARTER_VERS', '2.9.1');
+define('WP_STARTER_VERS', '3');
 
 if(!defined('WP_STARTER_LIB_PATH'))
     define('WP_STARTER_LIB_PATH', TEMPLATEPATH.'/lib/');
@@ -55,7 +55,7 @@ if(!is_admin()) {
     add_action('wp_enqueue_scripts', 'load_files');
 }
 
-// Remove the emoji detection - Who asked for it anyway
+// Remove the emoji detection
 remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 remove_action( 'wp_print_styles', 'print_emoji_styles' );
 
@@ -66,12 +66,6 @@ function admin_styles() {
 if(file_exists(WP_STARTER_ASSETS_PATH.'css/admin.css')) {
 	add_action( 'admin_init', 'admin_styles' );
 }
-
-// Custom Login form CSS
-/*function wp_starter_login_css() {
-    echo '<link rel="stylesheet" href="' . get_stylesheet_directory_uri() . '/library/css/login.css">';
-}
-add_action('login_head', 'wp_starter_login_css');*/
 
 /* --------------------------------------------------------------------------------
 *
@@ -102,6 +96,50 @@ if($get_theme->get( 'Name' ) == '[WP] Starter')
 *
 -------------------------------------------------------------------------------- */
 
-//require_once(WP_STARTER_LIB_PATH.'plugins/install_plugins.php');
+if(file_exists(WP_STARTER_LIB_PATH.'plugins/install_plugins.php')) {
+    require_once(WP_STARTER_LIB_PATH.'plugins/install_plugins.php');
+}
+
+/* --------------------------------------------------------------------------------
+*
+* [WP] Starter - CREDITS & LOGIN
+*
+-------------------------------------------------------------------------------- */
+
+// Backend Footer Credits
+// Please leave this in place or add your own links next to ours.
+function wp_starter_admin_footer() {
+	echo '<div id="shambix_credits"><p>Theme built with <a href="http://www.shambix.com" target="_blank">[WP] Starter</a> - Developed by <a href="http://www.shambix.com" target="_blank">Shambix</a> for WordPress.</p></div>';
+}
+add_filter('admin_footer_text', 'wp_starter_admin_footer');
+
+// Customize Footer for Login page
+function custom_login_css() {
+	?>
+	<style type="text/css">
+		#shambix_credits {
+			margin: auto;
+			padding: 8% 0 0;
+			width: 320px;
+			text-align: center;
+		}
+	</style>
+	<?php
+}
+add_action('login_head', 'custom_login_css');
+function wp_starter_login_footer() {
+	echo '<div id="shambix_credits" class="mute credits"><p id="backtoblog"><a href="https://github.com/Jany-M/WP-Starter" target="_blank">[WP] Starter</a> developed by <a href="http://www.shambix.com" target="_blank">Shambix</a></p></div>';
+}
+add_action('login_footer', 'wp_starter_login_footer');
+
+function wp_starter_login_url() {
+	get_bloginfo('siteurl');
+}
+add_filter('login_headerurl', 'wp_starter_login_url');
+
+function wp_starter_login_title() {
+	get_option('blogname');
+}
+add_filter('login_headertitle', 'wp_starter_login_title');
 
 ?>

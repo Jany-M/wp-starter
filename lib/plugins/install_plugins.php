@@ -7,15 +7,15 @@
 *
 -------------------------------------------------------------------------------- */
 
-$tmg_file = WP_STARTER_LIB.'helpers/class-tgm-plugin-activation.php';
+$tmg_file = WP_STARTER_LIB_PATH.'helpers/class-tgm-plugin-activation.php';
 if(file_exists($tmg_file)) {
 
     // TGM Plugin Activation
-    // Version: 2.4.0
-    require_once WP_STARTER_LIB.'helpers/class-tgm-plugin-activation.php';
+    // Version:  2.6.0
+    require_once WP_STARTER_LIB_PATH.'helpers/class-tgm-plugin-activation.php';
 
     // Uncomment this Action to activate the whole thing
-    //add_action( 'tgmpa_register', 'register_required_plugins' );
+    add_action( 'tgmpa_register', 'register_required_plugins' );
 
     function register_required_plugins() {
     	$plugins = array(
@@ -58,15 +58,20 @@ if(file_exists($tmg_file)) {
                 'required'  => false,
             ),
     		array(
+                'name'      => 'EWWW Image Optimizer',
+                'slug'      => 'ewww-image-optimizer',
+                'required'  => false,
+            ),
+            array(
                 'name'      => 'Types - Complete Solution for Custom Fields and Types',
                 'slug'      => 'types',
                 'required'  => false,
             ),
-    		/*array(
-                'name'      => 'WP Smush.it',
-                'slug'      => 'wp-smushit',
+            array(
+                'name'      => 'Advanced Custom Fields',
+                'slug'      => 'advanced-custom-fields',
                 'required'  => false,
-            ),*/
+            ),
     		array(
                 'name'      => 'Contact Form 7',
                 'slug'      => 'wpcf7',
@@ -110,10 +115,10 @@ if(file_exists($tmg_file)) {
 
 } // if tgm file exists
 
-$updater = WP_STARTER_LIB.'helpers/theme-updates/theme-update-checker.php';
+$updater = WP_STARTER_LIB_PATH.'helpers/theme-updates/theme-update-checker.php';
 if(file_exists($updater)) {
     //include('library/helpers/theme-updates/theme-update-checker.php'); // script to automatically update WP Starter from your WordPress backend
-    require WP_STARTER_LIB.'helpers/theme-updates/theme-update-checker.php';
+    require WP_STARTER_LIB_PATH.'helpers/theme-updates/theme-update-checker.php';
     $MyThemeUpdateChecker = new ThemeUpdateChecker(
     'wp-starter',
     'http://www.shambix.com/repo/wp-update-server-master/?action=get_metadata&slug=wp-starter'
