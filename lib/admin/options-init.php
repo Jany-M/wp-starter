@@ -23,6 +23,7 @@
 
     $args = array(
         'opt_name' => 'redux_wpstarter',
+        'use_cdn' => FALSE,
         'display_name' => 'WP Starter',
         'display_version' => '4',
         'page_slug' => 'wpstarter',
@@ -35,10 +36,8 @@
         'allow_sub_menu' => TRUE,
         'page_parent_post_type' => 'your_post_type',
         'page_priority' => '99',
-		'menu_icon' => 'dashicons-admin-generic',
-		'page_icon' => 'dashicons-admin-generic'
         'default_show' => TRUE,
-        'default_mark' => ' (default)',
+        'default_mark' => '(default)',
         'google_api_key' => 'AIzaSyDt-Iwvbkq9suqf0Xav46IbHDQy30TgFnA',
         'class' => 'wpstarter',
         'hints' => array(
@@ -68,7 +67,6 @@
             ),
         ),
         'output' => TRUE,
-        'output_tag' => TRUE,
         'settings_api' => TRUE,
         'cdn_check_time' => '1440',
         'compiler' => TRUE,
